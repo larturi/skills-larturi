@@ -25,6 +25,7 @@ Chequeos rapidos que bloquean el commit por si solos:
 - Codigo comentado sin justificacion o `TODO`/`FIXME` nuevos sin ticket.
 - Archivos que no deberian commitearse: binarios grandes, `node_modules`, builds, archivos de IDE.
 - Archivos staged por accidente (cambios ajenos al trabajo actual).
+- Marcadores de conflicto de merge sin resolver (`<<<<<<<`, `=======`, `>>>>>>>`).
 
 ## Las 4 dimensiones
 

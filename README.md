@@ -38,6 +38,20 @@ npx skills add larturi/skills-larturi --agent cursor
 npx skills add larturi/skills-larturi --list
 ```
 
+## Como actualizar
+
+Las skills no se actualizan solas: cuando se mergea un cambio al repo, hay que actualizar manualmente:
+
+```bash
+# Todas las skills instaladas
+npx skills update
+
+# Una skill especifica
+npx skills update pre-commit-audit
+```
+
+Si instalaste con symlink (metodo default), un solo `update` refresca todos tus agentes a la vez.
+
 ## Estructura del repositorio
 
 ```
