@@ -1,6 +1,6 @@
 ---
 name: ejemplo
-description: Skill de ejemplo que muestra la estructura basica de una skill para el equipo MOP
+description: Skill de ejemplo que muestra la estructura basica de una skill
 ---
 
 # Ejemplo

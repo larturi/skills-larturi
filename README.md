@@ -1,27 +1,27 @@
-# MOP Skills
+# Skills
 
-Hub de skills compartidos para el equipo MOP. Compatible con el ecosistema [Vercel Skills](https://github.com/vercel-labs/skills).
+Hub de skills compartidos. Compatible con el ecosistema [Vercel Skills](https://github.com/vercel-labs/skills).
 
 ## Instalacion
 
 ### Todas las skills del repo
 
 ```bash
-npx skills add telecom/mop-skills
+npx skills add larturi/skills-larturi
 ```
 
 ### Una skill especifica
 
 ```bash
-npx skills add telecom/mop-skills --skill <nombre-de-la-skill>
+npx skills add larturi/skills-larturi --skill <nombre-de-la-skill>
 ```
 
 ### Para un agente especifico
 
 ```bash
-npx skills add telecom/mop-skills --agent kiro-cli
-npx skills add telecom/mop-skills --agent claude-code
-npx skills add telecom/mop-skills --agent cursor
+npx skills add larturi/skills-larturi --agent kiro-cli
+npx skills add larturi/skills-larturi --agent claude-code
+npx skills add larturi/skills-larturi --agent cursor
 ```
 
 ## Skills disponibles
@@ -35,13 +35,13 @@ npx skills add telecom/mop-skills --agent cursor
 ## Listar skills disponibles
 
 ```bash
-npx skills add telecom/mop-skills --list
+npx skills add larturi/skills-larturi --list
 ```
 
 ## Estructura del repositorio
 
 ```
-mop-skills/
+skills-larturi/
 ├── README.md
 ├── skills/
 │   ├── ejemplo/
