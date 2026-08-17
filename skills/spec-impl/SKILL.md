@@ -1,6 +1,6 @@
 ---
 name: spec-impl
-description: Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma), crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs.
+description: Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma), solo si esta activado "AutoCreateBranch: true" crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs. Caso contrario no pregunta nada y trabaja directo en la rama main.
 disable-model-invocation: true
 argument-hint: <NN-nombre-spec>
 allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*)
@@ -99,7 +99,7 @@ No ofrezcas alternativas, no sugieras "puedo arrancar igual si querés". El bloq
 
 ---
 
-### Fase 3 — Crear la rama de git y cambiar a ella
+### Fase 3 — Crear la rama de git y cambiar a ella (por defecto no crear la rama, solo si AutoCreateBranch: true)
 
 Una vez que confirmaste que el estado significa `Approved`:
 
@@ -130,15 +130,7 @@ Una vez que confirmaste que el estado significa `Approved`:
    - Si **ya existe**: esto significa que se está retomando trabajo previo. Cambiá a ella, leé `git log --oneline` en la rama, y decile al usuario qué pasos del plan ya parecen hechos y desde cuál proponés retomar. Esperá confirmación sobre el punto de retoma antes de implementar nada.
    - En ambos casos: cambiá a la rama con `git checkout spec-NN-slug` y confirmá que el cambio fue exitoso antes de continuar.
 
-   **Si `AutoCreateBranch` es `false`:** preguntar antes de tocar git. Mostrar:
-
-   ```
-   AutoCreateBranch está en false.
-   ¿Crear y cambiar a la rama spec-NN-slug? [y/N]
-   ```
-
-   - Si el usuario responde **sí**: crear/cambiar a la rama exactamente como en el caso `true` de arriba.
-   - Si el usuario responde **no** o deja vacío: **no crear ninguna rama.** Decile al usuario que vas a implementar en la rama actual (la mostrada en el contexto de sesión de arriba) y pedile confirmación explícita para continuar ahí. No improvises — esperá la respuesta.
+   **Si `AutoCreateBranch` es `false`:** no preguntar nada ni comentar sobre ramas. Asumí directamente que se trabaja en `main` (o `master`, la rama principal del repo) y seguí. Si la rama actual no es `main`, cambiá a `main` con `git checkout main` sin pedir confirmación. No crear ninguna rama nueva.
 
 3. Confirmale visualmente al usuario que la spec está lista y qué rama está activa:
 
@@ -232,4 +224,4 @@ en el idioma de tu repo) y hacé el commit final antes de mergear esta rama.
               No crea rama, no toca código
 ```
 
-**La creación de rama está controlada por el flag `AutoCreateBranch`** en `specs/.spec-config.yml`. Por defecto es `true` (crea la rama automáticamente, como se muestra arriba). Ponelo en `false` para que la Fase 3 pregunte `[y/N]` antes de crear la rama.
+**La creación de rama está controlada por el flag `AutoCreateBranch`** en `specs/.spec-config.yml`. Por defecto es `true` (crea la rama automáticamente, como se muestra arriba). Ponelo en `false` para que la Fase 3 no cree ninguna rama ni pregunte nada — trabaja directo en `main`.
