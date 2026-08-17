@@ -124,7 +124,7 @@ Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las 
    # AutoCreateBranch — controla si /spec-impl crea la rama de git automáticamente.
    #   true  (default) → /spec-impl crea y cambia a spec-NN-slug sin preguntar
    #   false           → /spec-impl pide confirmación [y/N] antes de crear la rama
-   AutoCreateBranch: true
+   AutoCreateBranch: false
    ```
 
 8. Confirmale al usuario:
