@@ -1,6 +1,6 @@
 ---
 name: spec-impl
-description: Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma), solo si esta activado "AutoCreateBranch: true" crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs. Caso contrario no pregunta nada y trabaja directo en la rama main.
+description: 'Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma); solo si AutoCreateBranch esta en true crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs. Caso contrario no pregunta nada y trabaja directo en la rama main.'
 disable-model-invocation: true
 argument-hint: <NN-nombre-spec>
 allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*)
