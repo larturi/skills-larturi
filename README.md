@@ -30,6 +30,7 @@ npx skills add larturi/skills-larturi --agent cursor
 |-------|-------------|
 | [ejemplo](/skills/ejemplo/) | Skill de ejemplo para referencia |
 | [feature-flags-cleanup](/skills/feature-flags-cleanup/) | Detecta feature flags y genera reportes para planificar su eliminacion |
+| [generate-bff-collections](/skills/generate-bff-collections/) *(grupo)* | Genera colecciones de Postman: documenta la API completa de un BFF NestJS o prueba puntualmente un servicio externo que consume el repo |
 | [pre-commit-audit](/skills/pre-commit-audit/) | Auditoria 4R de cambios staged antes de commitear, con veredicto de bloqueo |
 | [spec](/skills/spec/) | Disena specs guiado por preguntas, siguiendo el metodo spec-driven |
 | [spec-impl](/skills/spec-impl/) | Implementa una spec aprobada paso a paso, con rama de git y pausas para revisar diffs |
