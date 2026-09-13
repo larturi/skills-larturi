@@ -13,7 +13,7 @@ Las cinco skills están agrupadas porque colaboran en (o reutilizan) un mismo fl
 |-------|-----|
 | `generate-bff-collection` | **Skill principal.** Documenta la API completa de un BFF NestJS: todos los endpoints propios por módulo, más una carpeta "Legacy Providers" con los servicios externos que llama cada uno (reutiliza la lógica de descubrimiento de `discover-external-services-ag`). |
 | `generate-external-tests` | Orquestador del flujo de testing puntual. Detecta el tipo de repositorio, delega el descubrimiento, y genera la colección, el environment y la documentación de un endpoint externo elegido por el usuario. |
-| `discover-external-services-ag` | Descubrimiento para **microservicios de autogestión**: providers/clients, URLs y secrets desde el `task-definition_testing.json` (ECS/Fargate). |
+| `discover-external-services-ag` | Descubrimiento para **microservicios de autogestión**: providers/clients por código; URLs y secrets se gestionan en Vault (arquitectura EKS), se piden al usuario cuando no son deducibles del código. |
 | `discover-external-services-ecommerce` | Descubrimiento para el **monorepo de ecommerce** (Go): clients en `api/service/infrastructure/`, URLs y credenciales en `api/.env`, cassettes de go-vcr como fuente de datos reales. |
 | `discover-external-services-landings` | Descubrimiento para **landings**: misma mecánica que `ag`, sobre la estructura de una landing. |
 

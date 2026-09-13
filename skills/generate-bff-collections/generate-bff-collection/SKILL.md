@@ -9,6 +9,15 @@ description: Genera una colección de Postman con TODOS los endpoints propios de
 
 A diferencia de `generate-external-tests` (que prueba un provider externo puntual seleccionado por el usuario), esta skill documenta el BFF completo: todos sus endpoints propios organizados por módulo, más una referencia cruzada al provider que llama cada uno, para poder saltar directo a probarlo si el endpoint falla.
 
+## Antes de empezar: recordatorio al usuario
+
+Antes de escanear el repo, mostrarle al usuario este recordatorio (no continuar automáticamente en silencio):
+
+- Hacer `git pull` en el repo a escanear, para mapear endpoints y providers sobre el código actualizado.
+- Instalar las dependencias del proyecto (`npm install` / `yarn install`), incluidas las privadas (ej. `@pv-commons-provider/*` u otros paquetes internos), para que la resolución de providers en el Paso 1 sea precisa.
+- Si las tiene a mano, compartir las URLs de los providers en UAT y PROD — las variables de entorno se gestionan en Vault y no son accesibles desde el repo, así que evitan preguntar endpoint por endpoint durante la generación.
+- Confirmar que el repo está parado en la rama/tag correcto, para que la colección refleje el código que realmente se va a probar.
+
 ## Paso 0: Detectar endpoints propios del BFF
 
 Buscar controllers en `src/**/*.controller.ts`. Por cada método con `@Get/@Post/@Put/@Patch/@Delete`, extraer: método HTTP, path completo (prefix de `@Controller()` + path del método), DTOs de request/response y guards de auth. Agrupar por módulo, usando la misma organización de `src/**/*.module.ts`.
@@ -17,7 +26,7 @@ Buscar controllers en `src/**/*.controller.ts`. Por cada método con `@Get/@Post
 
 Rastrear controller → service → provider/client inyectado, aplicando la misma lógica de `discover-external-services-ag` (providers locales en `src/**/providers|clients`, y providers de librería compartida vía imports `@pv-commons-provider/*` en los módulos). Anotar por endpoint qué provider(s) invoca (puede ser ninguno, uno o varios).
 
-URLs y credenciales de providers: `task_definition_testing.json`. URL base propia del BFF por ambiente: buscar `task-definition/task-definition_{local|testing|production}.json`; si no existe, preguntar al usuario.
+URLs y credenciales de providers: la arquitectura actual despliega sobre EKS y las variables de entorno se gestionan en Vault, no en un archivo versionado en el repo — identificar en el código el nombre de la variable referenciada y pedirle el valor al usuario si no es deducible. URL base propia del BFF por ambiente: si no está resuelta por el código o pedida al usuario en el recordatorio inicial, preguntar directamente.
 
 ## Paso 2: Confirmar alcance
 

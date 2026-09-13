@@ -18,8 +18,8 @@ Hay dos categorías de providers a detectar: **locales** (código fuente en el r
 Revisar el código del microservicio para identificar:
 
 - **Providers/Clients**: archivos que realizan llamadas HTTP/SOAP a servicios externos.
-- **URLs de servicios**: obtenerlas desde `task_definition_testing.json`, que contiene la Task Definition para desplegar el microservicio sobre Amazon ECS usando AWS Fargate. Este archivo define las variables de entorno, incluyendo las URLs de los servicios externos.
-- **Credenciales**: identificarlas en la sección `secrets` del `task_definition_testing.json` y dejarlas reflejadas en el environment de Postman, referenciando dónde buscarlas en AWS Secrets Manager.
+- **URLs de servicios**: la arquitectura actual despliega sobre EKS y las variables de entorno se gestionan en Vault, no en un archivo versionado en el repo. Identificar en el código el nombre de la variable de entorno referenciada (ej: `process.env.PI_BUSINESS_URL`) y pedirle el valor real al usuario si no es deducible del código.
+- **Credenciales**: mismo caso — identificar en el código qué variable de entorno se usa para la credencial (token, API key, etc.) y pedirle al usuario el valor o dónde consultarlo en Vault, sin asumir un mecanismo de secrets específico.
 - **Payloads**: estructura de datos enviados (DTOs, builders, adapters).
 
 **Ubicaciones comunes:**
@@ -27,7 +27,6 @@ Revisar el código del microservicio para identificar:
 src/**/providers/
 src/**/clients/
 src/**/services/
-task-definition/task-definition_testing.json
 ```
 
 ### Providers de librerías compartidas
@@ -38,7 +37,7 @@ Algunos servicios externos se consumen a través de librerías npm compartidas (
 
 1. **Buscar imports en módulos** (`src/**/*.module.ts`): líneas con patrón `from '@pv-commons-provider/*'` u otras convenciones de naming de providers compartidos. Cada import identifica un provider y el servicio externo asociado.
 
-2. **Cruzar con variables de entorno** del `task_definition_testing.json` para obtener la URL base del servicio. Las variables suelen seguir una convención derivada del nombre del paquete (ej: `@pv-commons-provider/pibusiness` → `PI_BUSINESS_URL`; `@pv-commons-provider/dxp-customer-bill` → `DXP_CUSTOMER_BILL_URL`).
+2. **Identificar la variable de entorno** que da la URL base del servicio (no está en un archivo del repo: se gestiona en Vault). Las variables suelen seguir una convención derivada del nombre del paquete (ej: `@pv-commons-provider/pibusiness` → `PI_BUSINESS_URL`; `@pv-commons-provider/dxp-customer-bill` → `DXP_CUSTOMER_BILL_URL`). Pedirle el valor al usuario si no puede deducirse del código.
 
 3. **Buscar paths de endpoints** en archivos de constantes (`src/**/utils/constant.ts`, `src/**/constants.ts` o similares). Los paths suelen definirse como constantes exportadas (ej: `DXP_CUSTOMER_BILL_INVOICES_PATH = '/v2/customerBill?...'`).
 

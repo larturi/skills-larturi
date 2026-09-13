@@ -14,8 +14,8 @@ Analizar un repositorio de una landing para identificar los servicios externos q
 Revisar el código del repositorio para identificar:
 
 - **Providers/Clients**: archivos que realizan llamadas HTTP/SOAP a servicios externos.
-- **URLs de servicios**: obtenerlas desde `task_definition_testing.json`, que contiene la Task Definition para desplegar el servicio sobre Amazon ECS usando AWS Fargate. Este archivo define las variables de entorno, incluyendo las URLs de los servicios externos.
-- **Credenciales**: identificarlas en la sección `secrets` del `task_definition_testing.json` y dejarlas reflejadas en el environment de Postman, referenciando dónde buscarlas en AWS Secrets Manager.
+- **URLs de servicios**: la arquitectura actual despliega sobre EKS y las variables de entorno se gestionan en Vault, no en un archivo versionado en el repo. Identificar en el código el nombre de la variable de entorno referenciada y pedirle el valor real al usuario si no es deducible del código.
+- **Credenciales**: mismo caso — identificar en el código qué variable de entorno se usa para la credencial (token, API key, etc.) y pedirle al usuario el valor o dónde consultarlo en Vault, sin asumir un mecanismo de secrets específico.
 - **Payloads**: estructura de datos enviados (DTOs, builders, adapters).
 
 **Ubicaciones comunes:**
@@ -23,7 +23,6 @@ Revisar el código del repositorio para identificar:
 src/**/providers/
 src/**/clients/
 src/**/services/
-task-definition/task-definition_testing.json
 ```
 
 ## Listar y seleccionar endpoints
