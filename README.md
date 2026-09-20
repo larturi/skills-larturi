@@ -28,12 +28,9 @@ npx skills add larturi/skills-larturi --agent cursor
 
 | Skill | Descripcion |
 |-------|-------------|
-| [ejemplo](/skills/ejemplo/) | Skill de ejemplo para referencia |
 | [feature-flags-cleanup](/skills/feature-flags-cleanup/) | Detecta feature flags y genera reportes para planificar su eliminacion |
 | [generate-bff-collections](/skills/generate-bff-collections/) *(grupo)* | Genera colecciones de Postman: documenta la API completa de un BFF NestJS o prueba puntualmente un servicio externo que consume el repo |
-| [pre-commit-audit](/skills/pre-commit-audit/) | Auditoria 4R de cambios staged antes de commitear, con veredicto de bloqueo |
-| [spec](/skills/spec/) | Disena specs guiado por preguntas, siguiendo el metodo spec-driven |
-| [spec-impl](/skills/spec-impl/) | Implementa una spec aprobada paso a paso, con rama de git y pausas para revisar diffs |
+| [sdd](/skills/sdd/) *(grupo)* | Metodo spec-driven: disena la spec guiado por preguntas, la implementa paso a paso, y audita los cambios antes de commitear |
 
 ## Listar skills disponibles
 
@@ -50,7 +47,7 @@ Las skills no se actualizan solas: cuando se mergea un cambio al repo, hay que a
 npx skills update
 
 # Una skill especifica
-npx skills update pre-commit-audit
+npx skills update spec-init
 ```
 
 Si instalaste con symlink (metodo default), un solo `update` refresca todos tus agentes a la vez.
@@ -61,10 +58,14 @@ Si instalaste con symlink (metodo default), un solo `update` refresca todos tus 
 skills-larturi/
 ├── README.md
 ├── skills/
-│   ├── ejemplo/
+│   ├── mi-skill/
 │   │   └── SKILL.md
-│   ├── otra-skill/
-│   │   └── SKILL.md
+│   ├── otro-grupo/
+│   │   ├── README.md
+│   │   ├── sub-skill-a/
+│   │   │   └── SKILL.md
+│   │   └── sub-skill-b/
+│   │       └── SKILL.md
 │   └── ...
 └── CONTRIBUTING.md
 ```

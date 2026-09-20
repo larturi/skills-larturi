@@ -21,4 +21,4 @@ Implementa una spec aprobada, paso a paso, con pausas para revisar cada diff.
 - Si encuentra una ambigüedad que la spec no resuelve, para y pregunta.
 - Termina recordando verificar los criterios de aceptación y actualizar el estado a `Implemented`.
 
-Requiere una spec generada por [`/spec`](../spec/) con estado `Approved`.
+Requiere una spec generada por [`/spec-init`](../spec-init/) con estado `Approved`.

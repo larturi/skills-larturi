@@ -1,11 +1,11 @@
-# /spec
+# /spec-init
 
 Diseña el documento de una feature haciendo preguntas de clarificación, siguiendo el método spec-driven. No escribe código.
 
 ## Uso
 
 ```bash
-/spec niveles-y-highscores
+/spec-init niveles-y-highscores
 ```
 
 ## Qué hace

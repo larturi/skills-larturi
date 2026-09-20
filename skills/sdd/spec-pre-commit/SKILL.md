@@ -1,5 +1,5 @@
 ---
-name: pre-commit-audit
+name: spec-pre-commit
 description: Auditoria de cambios staged antes de commitear, con metodologia 4R (Risk, Readability, Reliability, Resilience) mas chequeos de higiene de commit. Usar cuando se pida auditar, revisar o validar cambios antes de un commit
 ---
 

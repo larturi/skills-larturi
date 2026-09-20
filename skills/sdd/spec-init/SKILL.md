@@ -1,12 +1,12 @@
 ---
-name: spec
+name: spec-init
 description: Diseña y desarrolla specs siguiendo el método spec-driven. Hace preguntas de aclaración antes de proponer una estructura, y construye la spec sección por sección. Úsalo al comenzar una feature grande, antes de escribir código.
 disable-model-invocation: true
 argument-hint: 'descripción corta de la feature o requerimiento'
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*)
 ---
 
-# /spec — Diseñador guiado de specs
+# /spec-init — Diseñador guiado de specs
 
 ## Contexto de sesión
 
@@ -159,6 +159,6 @@ Ejemplo de un bloque bien formado:
 
 `$ARGUMENTS` es **la descripción de la feature**, no el nombre del archivo. Tratalo como el punto de partida para la Fase 1 y derivá el slug del objetivo en la Fase 4.
 
-La única excepción: si `$ARGUMENTS` ya es un único token en kebab-case sin espacios (ej.: `/spec levels-and-highscores`), es ambiguo entre una descripción y un slug — usalo como slug **y** como semilla de la descripción, sin pedir confirmación.
+La única excepción: si `$ARGUMENTS` ya es un único token en kebab-case sin espacios (ej.: `/spec-init levels-and-highscores`), es ambiguo entre una descripción y un slug — usalo como slug **y** como semilla de la descripción, sin pedir confirmación.
 
-Si invocaron `/spec` sin argumentos, empezá pidiendo la descripción en una oración.
+Si invocaron `/spec-init` sin argumentos, empezá pidiendo la descripción en una oración.

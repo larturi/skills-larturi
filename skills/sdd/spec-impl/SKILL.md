@@ -92,7 +92,7 @@ Para continuar tenés dos opciones:
   1. Si la spec está lista para implementarse, abrila y cambiá el estado
      a "Approved" (o el término equivalente que use tu equipo) manualmente.
      Ese cambio lo hace la persona, no el agente.
-  2. Si la spec todavía necesita trabajo, usá /spec [nombre] para retomarla.
+  2. Si la spec todavía necesita trabajo, usá /spec-init [nombre] para retomarla.
 ```
 
 No ofrezcas alternativas, no sugieras "puedo arrancar igual si querés". El bloqueo es intencional.
