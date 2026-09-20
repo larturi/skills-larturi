@@ -30,6 +30,7 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 
 - Seguí las cuatro fases en orden. **Nunca te saltees la Fase 2** — las preguntas son el punto central. Si el usuario quiere ir más rápido, recordale que el costo de una mala spec se paga después en el código. (La Fase 3 sí tiene un camino rápido una vez que la Fase 2 está genuinamente completa; ver abajo.)
 - Tus respuestas deben estar en el mismo idioma que el prompt inicial. Ej.: si el prompt inicial está en español, tus respuestas deben estar en español; si está en inglés, tus respuestas deben estar en inglés.
+- **Delegá la investigación cuando convenga, en cualquier fase.** Si tu agente expone una herramienta para lanzar subagentes (en Claude Code: `Agent`), no asumas que investigar significa "leer todo vos mismo, un archivo a la vez". Antes de una tanda de investigación (en Fase 1 para entender el proyecto, o en Fase 2 para poder formular una pregunta con criterio) evaluá: ¿esto se puede partir en 2 o más preguntas independientes entre sí? Si sí, lanzá un subagente por pregunta **en un mismo mensaje** (paralelo real, no uno atrás del otro) y sintetizá sus respuestas antes de seguir. Si es una sola pregunta puntual, o el proyecto/feature es chico y ya tenés el contexto a mano, investigá vos directamente — repartir overhead ahí solo suma latencia sin ahorrar nada.
 
 ### Fase 1 — Entender el contexto
 
