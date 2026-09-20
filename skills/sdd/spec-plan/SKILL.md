@@ -1,6 +1,6 @@
 ---
 name: spec-plan
-description: Planifica un proyecto o sistema grande desde cero, descomponiéndolo en una hoja de ruta de specs secuenciadas. Un nivel arriba de spec-init: en vez de una spec lista para implementar, produce visión, alcance y arquitectura de alto nivel más la lista ordenada de specs que después se van implementando de a una con spec-init + spec-impl. Úsalo al arrancar un sistema nuevo desde cero, no para features puntuales en un proyecto existente.
+description: "Planifica un proyecto o sistema grande desde cero, descomponiéndolo en una hoja de ruta de specs secuenciadas. Un nivel arriba de spec-init: en vez de una spec lista para implementar, produce visión, alcance y arquitectura de alto nivel más la lista ordenada de specs que después se van implementando de a una con spec-init + spec-impl. Úsalo al arrancar un sistema nuevo desde cero, no para features puntuales en un proyecto existente."
 disable-model-invocation: true
 argument-hint: 'descripción breve del proyecto o sistema a construir'
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*)
