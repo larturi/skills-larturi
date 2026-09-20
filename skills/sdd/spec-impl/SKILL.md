@@ -3,7 +3,7 @@ name: spec-impl
 description: 'Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma); solo si AutoCreateBranch esta en true crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs. Caso contrario no pregunta nada y trabaja directo en la rama main.'
 disable-model-invocation: true
 argument-hint: <NN-nombre-spec>
-allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Agent, SendMessage, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*)
+allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Agent, SendMessage, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_context, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
 ---
 
 # /spec-impl — Implementador de specs aprobadas
@@ -26,7 +26,25 @@ Configuración de creación de rama:
 
 ## Instrucciones
 
-Seguí estas cuatro fases en orden estricto. **No avances a la fase siguiente si la anterior no se completó correctamente.**
+Seguí estas cinco fases en orden estricto. **No avances a la fase siguiente si la anterior no se completó correctamente.**
+
+---
+
+### Fase 0 — Detectar si hay memoria persistente (Engram)
+
+Antes de identificar la spec, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_context`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
+
+- **Si Engram está disponible:** vas a usarlo durante el resto de la implementación (Fase 3 y Fase 4) para buscar contexto previo relevante y guardar de forma proactiva las decisiones, bugs y convenciones no obvias que vayan apareciendo. No hace falta avisarle nada al usuario por esto, salvo que encuentres contexto previo relevante para la spec (ver Fase 3).
+- **Si Engram NO está disponible** (no hay protocolo de Engram activo en esta sesión): decíselo al usuario en una sola línea, sin bloquear el flujo, y seguí:
+
+  ```
+  ℹ️ No tenés Engram configurado en esta sesión — voy a implementar la spec sin
+  guardar memoria persistente entre sesiones (decisiones, bugs y convenciones
+  van a quedar solo en este chat). Si querés que las próximas implementaciones
+  arranquen con ese contexto, activá el plugin engram.
+  ```
+
+  No insistas ni lo vuelvas a mencionar en el resto de la ejecución.
 
 ---
 
@@ -142,7 +160,9 @@ Una vez que confirmaste que el estado significa `Approved`:
    Estado: Approved   (← repetir el valor real encontrado en la spec)
    ```
 
-4. **Todavía no empieces a implementar.** Primero mostrale al usuario el resumen de la spec para que la tenga fresca. Extraé y mostrá:
+4. **Si Engram está disponible** (ver Fase 0): antes de mostrar el resumen, llamá `mem_search` con el nombre/slug de la spec y palabras clave de su objetivo, para ver si hay decisiones, bugs o convenciones de sesiones anteriores relacionados con esta feature. Si aparece algo relevante, mencionáselo al usuario junto con el resumen (p. ej. "Encontré en la memoria que la vez pasada se decidió X").
+
+5. **Todavía no empieces a implementar.** Primero mostrale al usuario el resumen de la spec para que la tenga fresca. Extraé y mostrá:
    - El **objetivo** (la línea después de `**Objective:**` / `**Objetivo:**` / equivalente).
    - El **alcance** (la sección `## Scope` / `## Alcance` / equivalente).
    - El **plan de implementación** (la sección con los pasos numerados — `## Implementation plan` / `## Plan de implementación` / equivalente).
@@ -221,6 +241,8 @@ Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No 
      Paso N completado. ¿Podés revisar el diff y avisarme si sigo con el Paso N+1?
      ```
 
+   - **Si Engram está disponible** (ver Fase 0): revisá el reporte del fork antes de pedir la confirmación. Si menciona una decisión no obvia, un bug arreglado (con su causa raíz), una convención nueva o una ambigüedad que el usuario terminó resolviendo, guardalo con `mem_save`. No guardes ruido (qué archivos se tocaron, resultados de test que pasaron sin drama) — solo lo que le sirva de contexto a una sesión futura.
+
    - Esperar confirmación antes de lanzar el fork del paso siguiente.
 
 **Nunca commitear automáticamente.** Ni el coordinador ni los forks. Ni por paso, ni al final. Vos escribís el código y mostrás el diff; commitear es decisión del usuario y orden del usuario. Solo commitear si lo pide explícitamente.
@@ -234,6 +256,8 @@ Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No 
 - No implementarlo en esta rama (ni delegarlo a un fork).
 
 **Al terminar el último paso:**
+
+Si Engram está disponible (ver Fase 0), llamá `mem_session_summary` antes del mensaje final, con Goal (la spec implementada), Discoveries (lo guardado paso a paso con `mem_save` durante la Fase 4), Accomplished (los pasos completados), Next Steps (verificar criterios de aceptación, correr `/spec-pre-commit`) y Relevant Files (los archivos tocados a lo largo de la implementación).
 
 ```
 ✅ Todos los pasos del plan están implementados.

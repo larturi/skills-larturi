@@ -3,7 +3,7 @@ name: spec-plan
 description: "Planifica un proyecto o sistema grande desde cero, descomponiéndolo en una hoja de ruta de specs secuenciadas. Un nivel arriba de spec-init: en vez de una spec lista para implementar, produce visión, alcance y arquitectura de alto nivel más la lista ordenada de specs que después se van implementando de a una con spec-init + spec-impl. Úsalo al arrancar un sistema nuevo desde cero, no para features puntuales en un proyecto existente."
 disable-model-invocation: true
 argument-hint: 'descripción breve del proyecto o sistema a construir'
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*)
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
 ---
 
 # /spec-plan — Planificador de alto nivel para proyectos nuevos
@@ -32,14 +32,31 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 
 ## Flujo del comando
 
-- Seguí las cuatro fases en orden.
+- Seguí las cinco fases en orden.
 - Tus respuestas deben estar en el mismo idioma que el prompt inicial.
+
+### Fase 0 — Detectar si hay memoria persistente (Engram)
+
+Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
+
+- **Si Engram está disponible:** vas a usarlo en la Fase 1 para traer decisiones de arquitectura o restricciones de sesiones anteriores relacionadas con este proyecto, y para guardar en la Fase 3 las decisiones de arquitectura que valga la pena recordar más allá de lo que ya queda escrito en el roadmap.
+- **Si Engram NO está disponible:** avisale al usuario en una sola línea, sin bloquear el flujo, y seguí:
+
+  ```
+  ℹ️ No tenés Engram configurado en esta sesión — las decisiones de arquitectura
+  de este roadmap van a quedar solo en specs/00-roadmap.md, sin memoria
+  persistente entre sesiones. Si querés que las próximas specs de este proyecto
+  arranquen con ese contexto, activá el plugin engram.
+  ```
+
+  No lo vuelvas a mencionar en el resto de la ejecución.
 
 ### Fase 1 — Entender el contexto
 
 1. Leé el archivo de memoria del proyecto, si existe. Probá en orden y detenete en el primero que encuentres: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `README.md`.
 2. Revisá el contexto de sesión de arriba. Si ya existe `specs/00-roadmap.md`, esto es una **revisión** de un roadmap existente, no una planificación desde cero — leelo completo antes de preguntar nada, y en la Fase 2 enfocate en qué cambió respecto de lo que ya está escrito.
 3. Si además de (o en vez de) un roadmap ya hay specs numeradas (`01-`, `02-`, ...), notá cuáles ítems del roadmap ya se implementaron para no volver a plantearlos como pendientes.
+4. **Si Engram está disponible** (ver Fase 0): llamá `mem_search` con palabras clave del proyecto o sistema a construir para ver si hay decisiones de arquitectura o restricciones de sesiones anteriores relevantes. Si aparece algo, traelo a la Fase 2 en vez de volver a preguntarlo.
 
 Si `$ARGUMENTS` llega vacío, pedile al usuario una descripción inicial en **una o dos oraciones** de qué sistema quiere construir.
 
@@ -73,6 +90,8 @@ Parar cuando puedas responder sin asumir nada:
 
 **Arquitectura de alto nivel:** un párrafo o lista corta con los componentes principales y las decisiones estructurales que ya se tomaron en la Fase 2 (stack, servicios, almacenamiento). Suficiente para justificar el orden del roadmap — no para implementar. Si una decisión de arquitectura todavía está abierta y bloquea el orden del roadmap, resolvela con una pregunta antes de seguir; no la dejes como TODO.
 
+**Si Engram está disponible** (ver Fase 0): guardá con `mem_save` las decisiones de arquitectura no obvias que se cierren acá (una elección de stack o proveedor, un trade-off descartado y por qué, una restricción no negociable que impuso el usuario). No dupliques ahí todo el roadmap — el archivo `specs/00-roadmap.md` ya es la fuente de verdad; guardá solo lo que le ahorre repreguntar a una sesión futura.
+
 **Descomposición en specs:** convertí el trabajo en una lista ordenada de ítems. Cada ítem es un candidato a spec futura, no la spec en sí.
 
 Reglas de descomposición:
@@ -87,7 +106,8 @@ Reglas de descomposición:
 1. Si es la primera vez, creá `specs/00-roadmap.md` siguiendo `template.md`. Si ya existía (revisión), actualizalo: conservá el estado (`Pendiente` / `En progreso` / `Hecho`) de los ítems que no cambiaron, y marcá con claridad qué se agregó, se sacó o se reordenó.
 2. Usá la fecha del contexto de sesión de arriba. **Nunca escribas una fecha que no hayas leído de ahí.**
 3. Escribí el archivo directamente. **No pidas permiso para escribirlo** — anunciá la ruta en la confirmación final.
-4. Confirmale al usuario:
+4. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (el roadmap creado/revisado), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (roadmap escrito) y Relevant Files (`specs/00-roadmap.md`).
+5. Confirmale al usuario:
    - Ruta del archivo (`specs/00-roadmap.md`).
    - Cuántos ítems tiene el roadmap y cuál es el primero.
    - Próximo paso: ejecutar `/spec-init` con la descripción del primer ítem pendiente para empezar a dosificar el roadmap.

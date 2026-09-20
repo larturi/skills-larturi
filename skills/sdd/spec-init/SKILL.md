@@ -3,7 +3,7 @@ name: spec-init
 description: Diseña y desarrolla specs siguiendo el método spec-driven. Hace preguntas de aclaración antes de proponer una estructura, y construye la spec sección por sección. Úsalo al comenzar una feature grande, antes de escribir código.
 disable-model-invocation: true
 argument-hint: 'descripción corta de la feature o requerimiento'
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*)
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
 ---
 
 # /spec-init — Diseñador guiado de specs
@@ -28,9 +28,24 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 
 ## Flujo del comando
 
-- Seguí las cuatro fases en orden. **Nunca te saltees la Fase 2** — las preguntas son el punto central. Si el usuario quiere ir más rápido, recordale que el costo de una mala spec se paga después en el código. (La Fase 3 sí tiene un camino rápido una vez que la Fase 2 está genuinamente completa; ver abajo.)
+- Seguí las cinco fases en orden. **Nunca te saltees la Fase 2** — las preguntas son el punto central. Si el usuario quiere ir más rápido, recordale que el costo de una mala spec se paga después en el código. (La Fase 3 sí tiene un camino rápido una vez que la Fase 2 está genuinamente completa; ver abajo.)
 - Tus respuestas deben estar en el mismo idioma que el prompt inicial. Ej.: si el prompt inicial está en español, tus respuestas deben estar en español; si está en inglés, tus respuestas deben estar en inglés.
 - **Delegá la investigación cuando convenga, en cualquier fase.** Si tu agente expone una herramienta para lanzar subagentes (en Claude Code: `Agent`), no asumas que investigar significa "leer todo vos mismo, un archivo a la vez". Antes de una tanda de investigación (en Fase 1 para entender el proyecto, o en Fase 2 para poder formular una pregunta con criterio) evaluá: ¿esto se puede partir en 2 o más preguntas independientes entre sí? Si sí, lanzá un subagente por pregunta **en un mismo mensaje** (paralelo real, no uno atrás del otro) y sintetizá sus respuestas antes de seguir. Si es una sola pregunta puntual, o el proyecto/feature es chico y ya tenés el contexto a mano, investigá vos directamente — repartir overhead ahí solo suma latencia sin ahorrar nada.
+
+### Fase 0 — Detectar si hay memoria persistente (Engram)
+
+Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
+
+- **Si Engram está disponible:** vas a usarlo en la Fase 1 para traer contexto de sesiones anteriores relacionado con esta feature, y para guardar en la Fase 3 las decisiones que valga la pena recordar más allá de lo que ya queda escrito en el archivo `.md`.
+- **Si Engram NO está disponible:** avisale al usuario en una sola línea, sin bloquear el flujo, y seguí:
+
+  ```
+  ℹ️ No tenés Engram configurado en esta sesión — las decisiones de esta spec van
+  a quedar solo en el archivo .md, sin memoria persistente entre sesiones. Si
+  querés que las próximas specs arranquen con ese contexto, activá el plugin engram.
+  ```
+
+  No lo vuelvas a mencionar en el resto de la ejecución.
 
 ### Fase 1 — Entender el contexto
 
@@ -39,6 +54,7 @@ Antes de preguntar sobre la feature, asegurate de tener contexto del proyecto:
 1. Leé el archivo de memoria del proyecto, si existe. Probá en orden y detenete en el primero que encuentres: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `README.md`. Esto adapta el skill al agente que lo esté ejecutando (Claude Code, Codex, Gemini CLI, etc.).
 2. Mirá el listado de `specs/` en el contexto de sesión de arriba para ver qué specs ya existen y cómo están numeradas.
 3. Si existen specs previas, leé al menos las dos más recientes para captar las convenciones del proyecto — incluyendo el **idioma** en que están escritas y la redacción exacta que usan para los estados y los títulos de sección. Una spec nueva debe coincidir con las existentes.
+4. **Si Engram está disponible** (ver Fase 0): llamá `mem_search` con palabras clave de la descripción de la feature para ver si hay decisiones o convenciones de sesiones anteriores relevantes. Si aparece algo, traelo a la Fase 2 en vez de volver a preguntarlo.
 
 Si el argumento `$ARGUMENTS` llega vacío, pedile al usuario una descripción inicial en **una sola oración** de qué quiere construir. Si la descripción no entra en una oración, esa es la primera señal de que la feature es demasiado grande — sugerí dividirla antes de continuar.
 
@@ -93,6 +109,8 @@ En ambos casos el contenido sigue el mismo orden:
 6. **Decisiones tomadas y descartadas** (con justificación breve).
 7. **Riesgos identificados** (solo si aplica — si no hay riesgos relevantes, omití esta sección).
 
+**Si Engram está disponible** (ver Fase 0): al cerrar la sección de decisiones, guardá con `mem_save` las que no sean obvias por sí solas (una elección de arquitectura, un trade-off descartado y por qué, una restricción que el usuario impuso). No dupliques ahí todo el contenido de la spec — el archivo `.md` ya es la fuente de verdad; guardá solo lo que le ahorre repreguntar a una sesión futura.
+
 **Después de cada sección (solo en el modo sección por sección):**
 
 - Mostrala formateada en markdown.
@@ -128,7 +146,8 @@ Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las 
    AutoCreateBranch: false
    ```
 
-8. Confirmale al usuario:
+8. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (la spec creada), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (spec escrita y guardada) y Relevant Files (la ruta del `.md`).
+9. Confirmale al usuario:
    - Ruta del archivo creado.
    - Recordatorio: la spec está en estado `Draft`. Cambiala a `Approved` una vez que la hayas releído.
    - Si acabás de crear `specs/.spec-config.yml`, mencioná que existe y que `AutoCreateBranch` tiene por defecto `true` (poné `false` si querés controlar vos mismo la creación de ramas).
