@@ -30,7 +30,7 @@ npx skills add larturi/skills-larturi --agent cursor
 |-------|-------------|
 | [feature-flags-cleanup](/skills/feature-flags-cleanup/) | Detecta feature flags y genera reportes para planificar su eliminacion |
 | [generate-bff-collections](/skills/generate-bff-collections/) *(grupo)* | Genera colecciones de Postman: documenta la API completa de un BFF NestJS o prueba puntualmente un servicio externo que consume el repo |
-| [sdd](/skills/sdd/) *(grupo)* | Metodo spec-driven: disena la spec guiado por preguntas, la implementa paso a paso, y audita los cambios antes de commitear |
+| [sdd](/skills/sdd/) *(grupo)* | Metodo spec-driven: planifica sistemas grandes en un roadmap de specs, disena cada spec guiado por preguntas, la implementa paso a paso, y audita los cambios antes de commitear |
 
 ## Listar skills disponibles
 

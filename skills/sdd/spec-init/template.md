@@ -1,6 +1,6 @@
 # Plantilla para una spec útil
 
-Este archivo es la referencia que consulta el skill `/spec` al generar specs. Cada sección incluye su propósito y un ejemplo mínimo. **No es texto para copiar textualmente** — es la forma que el skill debe respetar.
+Este archivo es la referencia que consulta el skill `/spec-init` al generar specs. Cada sección incluye su propósito y un ejemplo mínimo. **No es texto para copiar textualmente** — es la forma que el skill debe respetar.
 
 ---
 
