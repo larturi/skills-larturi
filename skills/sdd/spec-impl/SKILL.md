@@ -3,7 +3,7 @@ name: spec-impl
 description: 'Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma); solo si AutoCreateBranch esta en true crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs. Caso contrario no pregunta nada y trabaja directo en la rama main.'
 disable-model-invocation: true
 argument-hint: <NN-nombre-spec>
-allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*)
+allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Agent, SendMessage, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*)
 ---
 
 # /spec-impl — Implementador de specs aprobadas
@@ -152,45 +152,86 @@ Identificá los títulos de sección por significado, no por redacción exacta �
 
 ---
 
-### Fase 4 — Implementar paso a paso
+### Fase 4 — Implementar paso a paso (delegado a subagentes fork)
 
 Después de mostrar el resumen de la spec, decile al usuario:
 
 ```
 Voy a implementar la spec siguiendo el plan de implementación exactamente.
-Voy a pausar después de cada paso para que revises el diff.
+Cada paso lo delego a un subagente (fork) para no acumular en esta conversación
+el ruido de cada lectura/edición/test — vos y yo solo vemos el resumen y el diff.
+Voy a pausar después de cada paso para que lo revises.
 
 ¿Arrancamos con el Paso 1?
 ```
 
 Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No empezar sin ella.
 
-Una vez confirmado, seguí estas reglas durante toda la implementación:
+**Por qué delegar a un fork:** cada paso del plan típicamente implica leer varios archivos, editarlos, correr typecheck/lint/tests y a veces arreglar tests existentes que el cambio rompió. Ese trabajo genera mucho ruido de herramientas que no aporta nada a la conversación una vez terminado — solo el resultado importa. Un fork (Agent tool, `subagent_type: "fork"`) hereda toda esta conversación (la spec, las convenciones ya descubiertas, las decisiones ya tomadas) así que no necesita re-explicación, comparte el cache de contexto, y su ruido de herramientas queda fuera de esta conversación. Esto no acelera el reloj de pared — los pasos son secuenciales y cada uno puede depender del anterior — pero evita que specs largas de muchos pasos terminen compactando o saturando el contexto a mitad de camino. El fork corre en el mismo working directory que el coordinador (sin aislamiento de worktree): edita el repo real.
 
-**Nunca commitear automáticamente.** Ni por paso, ni al final. Vos escribís el código y mostrás el diff; commitear es decisión del usuario y orden del usuario. Solo commitear si lo pide explícitamente.
+**Regla:** un fork por paso, nunca en paralelo. No lances el fork del Paso N+1 hasta que el Paso N esté confirmado por el usuario. Incluso un paso que parezca trivial conviene delegarlo igual, para no romper la consistencia del flujo — el costo de un fork es bajo porque comparte tu cache.
 
-**Una regla por encima de todas:** implementá lo que dice la spec. Si algo en la spec te parece subóptimo, mencionalo como observación pero implementá lo acordado. Los cambios a la spec van en la spec, no en el código por sorpresa.
+**Cómo delegar cada paso:**
 
-**Ritmo de trabajo:**
+1. Armá un prompt de fork directivo y acotado a ese paso específico (no repitas toda la spec — el fork ya la tiene en su contexto heredado — pero sé explícito sobre el alcance exacto y lo que tiene que reportar):
 
-- Implementar un paso del plan.
-- Mostrar un resumen de qué archivos tocaste y qué hiciste.
-- Decir: `Paso N completado. ¿Podés revisar el diff y avisarme si sigo con el Paso N+1?`
-- Esperar confirmación antes de continuar.
+   ```
+   Implementá exactamente el Paso <N> del plan de implementación de la spec
+   que estamos trabajando: "<pegá acá el texto literal del paso, tal como
+   aparece en la spec>".
 
-**Si durante la implementación encontrás una ambigüedad** que la spec no resuelve:
+   Alcance estricto: solo este paso. No toques nada que corresponda a otro
+   paso del plan, aunque lo veas relacionado o rompiendo la compilación por
+   ahora.
 
-- Parar.
-- Describir la ambigüedad con precisión.
-- Presentar dos o tres opciones concretas.
-- Esperar la decisión del usuario.
-- No improvisar.
+   Antes de reportar terminado:
+   - Corré el typecheck y el linter del proyecto sobre el código tocado
+     (revisá package.json si no sabés los comandos exactos).
+   - Corré la suite de tests relevante (o completa si es rápida) y arreglá
+     cualquier test existente que tu cambio haya roto — no lo dejes para
+     después.
+   - Nunca corras comandos de Prisma migrate/db push/studio ni ningún
+     comando destructivo o que afecte sistemas compartidos: si hace falta
+     uno, avisalo en tu reporte con el comando exacto para que el usuario
+     lo corra manualmente.
+   - Nunca hagas commit.
+
+   Si te encontrás con una ambigüedad que la spec no resuelve: NO la
+   resuelvas por tu cuenta. Detené el trabajo en ese punto y en tu reporte
+   final describí la ambigüedad con precisión y 2-3 opciones concretas, en
+   vez de entregar una implementación completa.
+
+   Reportá en tu mensaje final (es lo único que va a leer el coordinador,
+   sé completo pero conciso):
+   - Lista de archivos tocados, con una línea de qué cambiaste en cada uno.
+   - Resultado de typecheck/lint/tests.
+   - Cualquier ambigüedad, desvío del plan u observación relevante.
+   ```
+
+2. Lanzá el fork: `Agent({ subagent_type: "fork", name: "spec-impl-paso-<N>", description: "Implementar Paso <N> de la spec", prompt: <lo de arriba> })`.
+
+3. Avisale al usuario en una línea que estás trabajando en el paso (p. ej. "Trabajando en el Paso <N>...") y terminá el turno. No inventes progreso ni resultado mientras el fork corre — la notificación llega sola en un turno posterior.
+
+4. Cuando llegue la notificación del fork:
+
+   - **Si reportó una ambigüedad bloqueante:** no la resuelvas vos. Presentale al usuario la ambigüedad y las opciones tal como las trajo el fork (podés usar `AskUserQuestion`). Cuando el usuario decida, retomá **el mismo fork** — no lances uno nuevo para el mismo paso — con `SendMessage({ to: "spec-impl-paso-<N>", message: "<la decisión del usuario>" })` para que termine el trabajo.
+   - **Si terminó el paso:** mostrale al usuario el resumen que trajo el fork (archivos tocados + resultado de verificación) y decile:
+
+     ```
+     Paso N completado. ¿Podés revisar el diff y avisarme si sigo con el Paso N+1?
+     ```
+
+   - Esperar confirmación antes de lanzar el fork del paso siguiente.
+
+**Nunca commitear automáticamente.** Ni el coordinador ni los forks. Ni por paso, ni al final. Vos escribís el código y mostrás el diff; commitear es decisión del usuario y orden del usuario. Solo commitear si lo pide explícitamente.
+
+**Una regla por encima de todas:** implementá lo que dice la spec. Si algo en la spec te parece subóptimo, mencionalo como observación pero implementá lo acordado. Los cambios a la spec van en la spec, no en el código por sorpresa. Esto aplica también al prompt de cada fork — dejale claro que implemente la spec tal cual, no una versión mejorada.
 
 **Si el usuario pide algo que está fuera del alcance de la spec:**
 
 - Recordarle que está fuera del alcance de esta spec.
 - Sugerir anotarlo para la próxima spec.
-- No implementarlo en esta rama.
+- No implementarlo en esta rama (ni delegarlo a un fork).
 
 **Al terminar el último paso:**
 
@@ -215,7 +256,7 @@ Antes del commit final, corré /spec-pre-commit sobre los cambios staged.
   Fase 2  →  Lee el estado → "Approved" (o "Aprobado", etc.) → ✅ continúa
   Fase 3  →  git checkout -b spec-01-mvp-arkanoid → git checkout spec-01-mvp-arkanoid
               Muestra objetivo, alcance, plan y criterios
-  Fase 4  →  Implementa paso a paso con pausas
+  Fase 4  →  Delega cada paso a un fork, pausa después de cada uno
               Termina recordando verificar los criterios de aceptación
               y correr /spec-pre-commit antes del commit final
 
