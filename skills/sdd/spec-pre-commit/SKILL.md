@@ -93,3 +93,4 @@ Si un bloque no tiene hallazgos, dilo explicitamente (`R2 — Readability: sin o
 - Si el veredicto es `NO COMMITEAR`, ofrece arreglar los hallazgos criticos antes de commitear.
 - Si hay cambios unstaged mezclados con staged, avisa: el commit solo incluye lo staged.
 - Esta skill audita, no commitea. El commit lo decide y lo ejecuta el usuario.
+- Si `specs/00-roadmap.md` existe y el veredicto es `LISTO PARA COMMIT` o `COMMIT CON CAMBIOS MENORES`, recordale al usuario marcar el ítem correspondiente como `Hecho` en el roadmap después de commitear.

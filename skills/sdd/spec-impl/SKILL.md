@@ -199,7 +199,9 @@ Una vez confirmado, seguí estas reglas durante toda la implementación:
 
 Próximo paso: verificar los criterios de aceptación de la spec uno por uno.
 Si todos pasan, actualizá el estado de la spec a "Implemented" (o el equivalente
-en el idioma de tu repo) y hacé el commit final antes de mergear esta rama.
+en el idioma de tu repo).
+
+Antes del commit final, corré /spec-pre-commit sobre los cambios staged.
 ```
 
 ---
@@ -215,6 +217,7 @@ en el idioma de tu repo) y hacé el commit final antes de mergear esta rama.
               Muestra objetivo, alcance, plan y criterios
   Fase 4  →  Implementa paso a paso con pausas
               Termina recordando verificar los criterios de aceptación
+              y correr /spec-pre-commit antes del commit final
 
 /spec-impl 02-powerups  (estado: Draft / Borrador)
 
