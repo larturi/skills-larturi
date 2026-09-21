@@ -2,6 +2,10 @@
 
 Hub de skills compartidos. Compatible con el ecosistema [Vercel Skills](https://github.com/vercel-labs/skills).
 
+> Ver [docs/flujo-instrucciones.md](/docs/flujo-instrucciones.md) para el flujo completo
+> de instrucciones globales multi-proveedor (Claude, Codex, opencode) en el que encajan
+> estas skills.
+
 ## Instalacion
 
 ### Todas las skills del repo
@@ -57,6 +61,8 @@ Si instalaste con symlink (metodo default), un solo `update` refresca todos tus 
 ```
 skills-larturi/
 ├── README.md
+├── docs/
+│   └── flujo-instrucciones.md
 ├── skills/
 │   ├── mi-skill/
 │   │   └── SKILL.md
