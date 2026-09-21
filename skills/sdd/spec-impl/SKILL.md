@@ -210,6 +210,14 @@ Cuando el usuario confirme que arranca el Paso 1, si en la Fase 1 encontraste un
    paso del plan, aunque lo veas relacionado o rompiendo la compilación por
    ahora.-
 
+   Calidad de código: priorizá simplicidad - funciones chicas, sin
+   duplicación (DRY), principios SOLID donde aplique. Evitá comentarios
+   superfluos (el código debe ser auto-documentado) y expresiones crípticas;
+   preferí siempre claridad. Aplicá buenas prácticas de seguridad cuando
+   corresponda. Seguí las convenciones de estilo e idioma que ya existan en
+   el proyecto (CLAUDE.md, linter, código circundante); si no hay ninguna
+   definida, priorizá lo anterior por defecto.
+
    Antes de reportar terminado:
    - Corré el typecheck y el linter del proyecto sobre el código tocado
      (revisá package.json si no sabés los comandos exactos).
