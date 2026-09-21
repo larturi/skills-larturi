@@ -29,7 +29,7 @@ Chequeos rapidos que bloquean el commit por si solos:
 
 ## Las 4 dimensiones
 
-### R1 — Risk (Seguridad y riesgo)
+### R1 - Risk (Seguridad y riesgo)
 
 Foco: seguridad, limites de privilegios, exposicion de datos y vulnerabilidades que bloquean el commit.
 
@@ -39,7 +39,7 @@ Foco: seguridad, limites de privilegios, exposicion de datos y vulnerabilidades 
 - Exposicion de datos sensibles hacia el cliente.
 - Dependencias nuevas: version pinneada, paquete conocido, sin typosquatting.
 
-### R2 — Readability (Legibilidad y mantenibilidad)
+### R2 - Readability (Legibilidad y mantenibilidad)
 
 Foco: naming, complejidad, intencion y convenciones del proyecto.
 
@@ -50,7 +50,7 @@ Foco: naming, complejidad, intencion y convenciones del proyecto.
 - Claridad de intencion: ¿se entiende QUE hace el codigo sin adivinar?
 - Tamano del cambio: si el diff es muy grande, sugerir dividir en commits mas chicos.
 
-### R3 — Reliability (Confiabilidad y comportamiento)
+### R3 - Reliability (Confiabilidad y comportamiento)
 
 Foco: logica correcta, edge cases, contratos y regresiones.
 
@@ -61,7 +61,7 @@ Foco: logica correcta, edge cases, contratos y regresiones.
 - Determinismo: nada de dependencias ocultas de orden, tiempo o estado global.
 - Si hay tests cercanos al cambio: ¿siguen validos? ¿Falta cubrir comportamiento nuevo o bugfix?
 
-### R4 — Resilience (Resiliencia y operacion)
+### R4 - Resilience (Resiliencia y operacion)
 
 Foco: fallbacks, degradacion elegante, observabilidad y riesgos operativos.
 
@@ -82,15 +82,16 @@ Reporta en espanol, agrupado por bloque (Higiene, luego R1 a R4). Para cada hall
 
 Cerra con un **veredicto**:
 
-- `LISTO PARA COMMIT` — sin criticos ni advertencias de higiene.
-- `COMMIT CON CAMBIOS MENORES` — solo advertencias/sugerencias.
-- `NO COMMITEAR` — al menos un `CRITICO`.
+- `LISTO PARA COMMIT` - sin criticos ni advertencias de higiene.
+- `COMMIT CON CAMBIOS MENORES` - solo advertencias/sugerencias.
+- `NO COMMITEAR` - al menos un `CRITICO`.
 
-Si un bloque no tiene hallazgos, dilo explicitamente (`R2 — Readability: sin observaciones`). No inventes hallazgos para llenar.
+Si un bloque no tiene hallazgos, dilo explicitamente (`R2 - Readability: sin observaciones`). No inventes hallazgos para llenar.
 
 ## Notas
 
 - Si el veredicto es `NO COMMITEAR`, ofrece arreglar los hallazgos criticos antes de commitear.
 - Si hay cambios unstaged mezclados con staged, avisa: el commit solo incluye lo staged.
 - Esta skill audita, no commitea. El commit lo decide y lo ejecuta el usuario.
-- Si `specs/00-roadmap.md` existe y el veredicto es `LISTO PARA COMMIT` o `COMMIT CON CAMBIOS MENORES`, recordale al usuario marcar el ítem correspondiente como `Hecho` en el roadmap después de commitear.
+- No infieras vínculos con el roadmap ni marques ítems como `Hecho`: `/spec-impl` sincroniza únicamente los vínculos exactos después de verificar los criterios de aceptación.
+- Nunca uses el carácter de guion largo. Usá siempre `-`.

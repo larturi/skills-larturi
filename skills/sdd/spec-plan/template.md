@@ -1,13 +1,13 @@
 # Plantilla para un roadmap útil
 
-Este archivo es la referencia que consulta el skill `/spec-plan` al generar el roadmap. Cada sección incluye su propósito. **No es texto para copiar textualmente** — es la forma que el skill debe respetar.
+Este archivo es la referencia que consulta el skill `/spec-plan` al generar el roadmap. Cada sección incluye su propósito. **No es texto para copiar textualmente** - es la forma que el skill debe respetar.
 
 ---
 
 ## Encabezado
 
 ```markdown
-# Roadmap — Nombre corto del proyecto
+# Roadmap - Nombre corto del proyecto
 
 > **Status:** Planning
 > **Created:** YYYY-MM-DD
@@ -53,13 +53,13 @@ Componentes principales y decisiones estructurales ya tomadas. Nivel de detalle:
 - Decisiones abiertas no bloqueantes: ...
 ```
 
-Si una decisión sigue abierta y no bloquea el orden del roadmap, anotala como pendiente explícitamente — no la escondas.
+Si una decisión sigue abierta y no bloquea el orden del roadmap, anotala como pendiente explícitamente - no la escondas.
 
 ---
 
 ## Roadmap de specs
 
-La sección central. Lista ordenada, no tabla larga con detalle de implementación — eso vive en cada spec.
+La sección central. Lista ordenada, no tabla larga con detalle de implementación - eso vive en cada spec.
 
 ```markdown
 ## Roadmap de specs
@@ -88,7 +88,7 @@ La sección central. Lista ordenada, no tabla larga con detalle de implementaci�
 - Estado usa `Pendiente`, `Especificada`, `En progreso`, `Hecho` o `Replantear`.
 - `Pendiente`: todavía no hay spec. `Especificada`: la spec existe pero no está implementada. `En progreso`: hay evidencia de implementación activa. `Hecho`: la spec vinculada está en `Implemented` o equivalente. `Replantear`: la spec quedó obsoleta o su alcance debe redefinirse.
 - `Spec` contiene la ruta real una vez creada; hasta entonces dice `todavía no creada`.
-- El slug de cada ítem es una sugerencia de punto de partida para `/spec-init`, no un compromiso — puede ajustarse al escribir la spec real.
+- El slug de cada ítem es una sugerencia de punto de partida para `/spec-init`, no un compromiso - puede ajustarse al escribir la spec real.
 
 ---
 
@@ -99,7 +99,7 @@ Capacidades valiosas registradas pero todavía no comprometidas. No llevan núme
 ```markdown
 ## Ideas para etapas futuras
 
-- **idea-slug** — Descripción breve de la capacidad.
+- **idea-slug** - Descripción breve de la capacidad.
   - Motivo para diferir: No es necesaria para validar la v1.
   - Reconsiderar cuando: Exista suficiente uso o evidencia que la justifique.
 ```
@@ -148,7 +148,7 @@ Cierre fijo del documento:
 ```markdown
 ## Cómo seguir
 
-Ejecutá `/spec-init` con la descripción del próximo ítem pendiente (en orden, salvo que el usuario prefiera otro), vinculá aquí el archivo creado y cambiá el estado del roadmap a `Active`. Cuando esa spec llegue a `Approved`, corré `/spec-impl` para implementarla. Al terminar, verificá que la spec esté en `Implemented`, marcá el ítem como `Hecho` y actualizá la fecha antes de pasar al siguiente. Cuando todos los ítems comprometidos estén hechos, cambiá el estado del roadmap a `Complete`.
+Ejecutá `/spec-init` nombrando el slug exacto del próximo ítem pendiente (en orden, salvo que el usuario prefiera otro). Si el vínculo es inequívoco, `/spec-init` lo registra como `Especificada` y activa el roadmap. Cuando esa spec llegue a `Approved`, corré `/spec-impl`: al comenzar la marca `En progreso` y, después de verificar todos los criterios de aceptación, deja la spec en `Implemented` y el ítem en `Hecho`. Cuando todos los ítems comprometidos estén hechos, el roadmap pasa a `Complete`.
 ```
 
 ---

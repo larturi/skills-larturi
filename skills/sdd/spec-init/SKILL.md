@@ -3,10 +3,10 @@ name: spec-init
 description: Diseña y desarrolla specs siguiendo el método spec-driven. Hace preguntas de aclaración antes de proponer una estructura, y construye la spec sección por sección. Úsalo al comenzar una feature grande, antes de escribir código.
 disable-model-invocation: true
 argument-hint: 'descripción corta de la feature o requerimiento'
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
+allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
 ---
 
-# /spec-init — Diseñador guiado de specs
+# /spec-init - Diseñador guiado de specs
 
 ## Contexto de sesión
 
@@ -28,41 +28,48 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 
 ## Flujo del comando
 
-- Seguí las cinco fases en orden. **Nunca te saltees la Fase 2** — las preguntas son el punto central. Si el usuario quiere ir más rápido, recordale que el costo de una mala spec se paga después en el código. (La Fase 3 sí tiene un camino rápido una vez que la Fase 2 está genuinamente completa; ver abajo.)
+- Seguí las cinco fases en orden. **Nunca te saltees la Fase 2** - las preguntas son el punto central. Si el usuario quiere ir más rápido, recordale que el costo de una mala spec se paga después en el código. (La Fase 3 sí tiene un camino rápido una vez que la Fase 2 está genuinamente completa; ver abajo.)
 - Tus respuestas deben estar en el mismo idioma que el prompt inicial. Ej.: si el prompt inicial está en español, tus respuestas deben estar en español; si está en inglés, tus respuestas deben estar en inglés.
-- **Delegá la investigación cuando convenga, en cualquier fase.** Si tu agente expone una herramienta para lanzar subagentes (en Claude Code: `Agent`), no asumas que investigar significa "leer todo vos mismo, un archivo a la vez". Antes de una tanda de investigación (en Fase 1 para entender el proyecto, o en Fase 2 para poder formular una pregunta con criterio) evaluá: ¿esto se puede partir en 2 o más preguntas independientes entre sí? Si sí, lanzá un subagente por pregunta **en un mismo mensaje** (paralelo real, no uno atrás del otro) y sintetizá sus respuestas antes de seguir. Si es una sola pregunta puntual, o el proyecto/feature es chico y ya tenés el contexto a mano, investigá vos directamente — repartir overhead ahí solo suma latencia sin ahorrar nada.
+- **Delegá la investigación cuando convenga, en cualquier fase.** Si tu agente expone una herramienta para lanzar subagentes (en Claude Code: `Agent`), no asumas que investigar significa "leer todo vos mismo, un archivo a la vez". Antes de una tanda de investigación (en Fase 1 para entender el proyecto, o en Fase 2 para poder formular una pregunta con criterio) evaluá: ¿esto se puede partir en 2 o más preguntas independientes entre sí? Si sí, lanzá un subagente por pregunta **en un mismo mensaje** (paralelo real, no uno atrás del otro) y sintetizá sus respuestas antes de seguir. Si es una sola pregunta puntual, o el proyecto/feature es chico y ya tenés el contexto a mano, investigá vos directamente - repartir overhead ahí solo suma latencia sin ahorrar nada.
 
-### Fase 0 — Detectar si hay memoria persistente (Engram)
+### Fase 0 - Detectar si hay memoria persistente (Engram)
 
-Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
+Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` - se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
 
 - **Si Engram está disponible:** vas a usarlo en la Fase 1 para traer contexto de sesiones anteriores relacionado con esta feature, y para guardar en la Fase 3 las decisiones que valga la pena recordar más allá de lo que ya queda escrito en el archivo `.md`.
 - **Si Engram NO está disponible:** avisale al usuario en una sola línea, sin bloquear el flujo, y seguí:
 
   ```
-  ℹ️ No tenés Engram configurado en esta sesión — las decisiones de esta spec van
+  ℹ️ No tenés Engram configurado en esta sesión - las decisiones de esta spec van
   a quedar solo en el archivo .md, sin memoria persistente entre sesiones. Si
   querés que las próximas specs arranquen con ese contexto, activá el plugin engram.
   ```
 
   No lo vuelvas a mencionar en el resto de la ejecución.
 
-### Fase 1 — Entender el contexto
+### Fase 1 - Entender el contexto
 
 Antes de preguntar sobre la feature, asegurate de tener contexto del proyecto:
 
 1. Leé el archivo de memoria del proyecto, si existe. Probá en orden y detenete en el primero que encuentres: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `README.md`. Esto adapta el skill al agente que lo esté ejecutando (Claude Code, Codex, Gemini CLI, etc.).
 2. Mirá el listado de `specs/` en el contexto de sesión de arriba para ver qué specs ya existen y cómo están numeradas.
-3. Si existen specs previas, leé al menos las dos más recientes para captar las convenciones del proyecto — incluyendo el **idioma** en que están escritas y la redacción exacta que usan para los estados y los títulos de sección. Una spec nueva debe coincidir con las existentes.
-4. **Si Engram está disponible** (ver Fase 0): llamá `mem_search` con palabras clave de la descripción de la feature para ver si hay decisiones o convenciones de sesiones anteriores relevantes. Si aparece algo, traelo a la Fase 2 en vez de volver a preguntarlo.
+3. Si existen specs previas, leé al menos las dos más recientes para captar las convenciones del proyecto - incluyendo el **idioma** en que están escritas y la redacción exacta que usan para los estados y los títulos de sección. Una spec nueva debe coincidir con las existentes.
+4. Si existe `specs/00-roadmap.md`, leelo para determinar si esta spec corresponde a un ítem comprometido. La integración es opcional y nunca bloquea este comando:
+   - Sin roadmap, o con roadmap `Complete`: tratá la feature como spec independiente y no modifiques el roadmap.
+   - Con roadmap `Paused`: no lo reanudes ni lo modifiques automáticamente.
+   - Con roadmap `Active`: vinculá solo si `$ARGUMENTS` nombra un slug exacto del roadmap o el usuario identifica explícita e inequívocamente ese ítem.
+   - Con roadmap `Planning`: vinculá solo ante esa misma referencia explícita; al guardar la spec, el roadmap pasa a `Active`.
+   - Si la coincidencia es semántica, múltiple o dudosa, no adivines ni hagas otra ronda de preguntas solo por esto: continuá con una spec independiente y avisalo en la confirmación final.
+   Conservá internamente el slug coincidente para usarlo en la Fase 4. Una idea de **Ideas para etapas futuras** no cuenta como ítem comprometido: primero debe promoverse mediante `/spec-plan`.
+5. **Si Engram está disponible** (ver Fase 0): llamá `mem_search` con palabras clave de la descripción de la feature para ver si hay decisiones o convenciones de sesiones anteriores relevantes. Si aparece algo, traelo a la Fase 2 en vez de volver a preguntarlo.
 
-Si el argumento `$ARGUMENTS` llega vacío, pedile al usuario una descripción inicial en **una sola oración** de qué quiere construir. Si la descripción no entra en una oración, esa es la primera señal de que la feature es demasiado grande — sugerí dividirla antes de continuar.
+Si el argumento `$ARGUMENTS` llega vacío, pedile al usuario una descripción inicial en **una sola oración** de qué quiere construir. Si la descripción no entra en una oración, esa es la primera señal de que la feature es demasiado grande - sugerí dividirla antes de continuar.
 
-### Fase 2 — Clarificar mediante preguntas
+### Fase 2 - Clarificar mediante preguntas
 
 Esta es la fase más importante del comando. Tu trabajo acá es **detectar ambigüedades y preguntar**, no asumir.
 
-Hacé las preguntas en bloques de 3 a 5 por vez (no una sola pregunta seguida de otra sola pregunta — eso es agotador). Después de cada bloque, esperá una respuesta antes de continuar.
+Hacé las preguntas en bloques de 3 a 5 por vez (no una sola pregunta seguida de otra sola pregunta - eso es agotador). Después de cada bloque, esperá una respuesta antes de continuar.
 
 **Categorías de preguntas que siempre deberías considerar:**
 
@@ -78,7 +85,7 @@ Hacé las preguntas en bloques de 3 a 5 por vez (no una sola pregunta seguida de
 
 - Usá preguntas concretas, no abiertas. ❌ "¿Cómo te imaginás la persistencia?" → ✅ "¿La persistencia es localStorage, IndexedDB, o un archivo JSON en disco?"
 - Cuando ofrezcas opciones, dá entre 2 y 4, marcando cuál es tu recomendación y por qué.
-- Si tu agente expone una herramienta nativa de preguntas de opción múltiple (en Claude Code: `AskUserQuestion`), usala para estos bloques en vez de escribir las opciones como prosa — el usuario elige en lugar de tipear. Poné tu recomendación primero y etiquetala. Si no existe esa herramienta, usá una lista markdown numerada.
+- Si tu agente expone una herramienta nativa de preguntas de opción múltiple (en Claude Code: `AskUserQuestion`), usala para estos bloques en vez de escribir las opciones como prosa - el usuario elige en lugar de tipear. Poné tu recomendación primero y etiquetala. Si no existe esa herramienta, usá una lista markdown numerada.
 - Si detectás una respuesta que abriría la caja de Pandora (ej.: "y también queremos multiplayer"), señalá que eso merece su propia spec y preguntá si lo dejamos fuera del alcance de esta.
 
 **Cuándo dejar de preguntar:**
@@ -91,25 +98,25 @@ Parar cuando puedas responder estas tres preguntas sin asumir nada:
 
 Si todavía no podés responder alguna, seguí preguntando.
 
-### Fase 3 — Escribir la spec
+### Fase 3 - Escribir la spec
 
 Una vez cerrada la Fase 2, decidí cómo escribirla:
 
-**Si ya tenés toda la información que necesitás** — es decir, podés responder las tres preguntas de la Fase 2 (qué archivos cambian, cuáles son el primer y último paso ejecutable, cómo verificar que está terminada) **sin asumir nada** — entonces **no vayas sección por sección**. Escribí la spec completa y saltá directo a la Fase 4 para guardar el archivo. No pidas confirmación sección por sección, ni muestres un borrador para aprobación primero: el usuario ya respondió todo en la Fase 2, y volver a preguntar es fricción. El usuario revisa el archivo guardado y pide cambios si hace falta.
+**Si ya tenés toda la información que necesitás** - es decir, podés responder las tres preguntas de la Fase 2 (qué archivos cambian, cuáles son el primer y último paso ejecutable, cómo verificar que está terminada) **sin asumir nada** - entonces **no vayas sección por sección**. Escribí la spec completa y saltá directo a la Fase 4 para guardar el archivo. No pidas confirmación sección por sección, ni muestres un borrador para aprobación primero: el usuario ya respondió todo en la Fase 2, y volver a preguntar es fricción. El usuario revisa el archivo guardado y pide cambios si hace falta.
 
 **Solo si falta información** (el usuario cortó la Fase 2 antes de tiempo, una respuesta fue vaga, o alguna sección no se puede escribir sin inventar algo), desarrollá las secciones **una por una**, mostrando cada una y esperando confirmación antes de pasar a la siguiente.
 
 En ambos casos el contenido sigue el mismo orden:
 
-1. **Encabezado** (estado, dependencias, fecha, objetivo en una oración). El objetivo en una oración es crítico — si no entra en una oración, volvé a la Fase 2.
+1. **Encabezado** (estado, dependencias, fecha, objetivo en una oración). El objetivo en una oración es crítico - si no entra en una oración, volvé a la Fase 2.
 2. **Alcance** (qué está adentro y qué NO). El "no está" debe ser explícito.
 3. **Modelo de datos** (estructuras concretas con nombres reales). Si la feature no introduce datos nuevos, omití esta sección y decilo explícitamente.
 4. **Plan de implementación** (pasos numerados, cada uno dejando el sistema funcional).
 5. **Criterios de aceptación** (checklist booleano, no aspiracional).
 6. **Decisiones tomadas y descartadas** (con justificación breve).
-7. **Riesgos identificados** (solo si aplica — si no hay riesgos relevantes, omití esta sección).
+7. **Riesgos identificados** (solo si aplica - si no hay riesgos relevantes, omití esta sección).
 
-**Si Engram está disponible** (ver Fase 0): al cerrar la sección de decisiones, guardá con `mem_save` las que no sean obvias por sí solas (una elección de arquitectura, un trade-off descartado y por qué, una restricción que el usuario impuso). No dupliques ahí todo el contenido de la spec — el archivo `.md` ya es la fuente de verdad; guardá solo lo que le ahorre repreguntar a una sesión futura.
+**Si Engram está disponible** (ver Fase 0): al cerrar la sección de decisiones, guardá con `mem_save` las que no sean obvias por sí solas (una elección de arquitectura, un trade-off descartado y por qué, una restricción que el usuario impuso). No dupliques ahí todo el contenido de la spec - el archivo `.md` ya es la fuente de verdad; guardá solo lo que le ahorre repreguntar a una sesión futura.
 
 **Después de cada sección (solo en el modo sección por sección):**
 
@@ -123,33 +130,40 @@ En ambos casos el contenido sigue el mismo orden:
 - Generar criterios de aceptación que no son verificables ("que funcione bien").
 - Poner en el plan de implementación cosas que no están en el alcance.
 - Asumir nombres de archivos o estructuras que el usuario no confirmó.
-- Saltearse la sección de decisiones — es la que tiene más valor a largo plazo.
+- Saltearse la sección de decisiones - es la que tiene más valor a largo plazo.
 
-### Fase 4 — Guardar la spec
+### Fase 4 - Guardar la spec
 
 Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las secciones fueron confirmadas):
 
 1. Determiná el siguiente número secuencial a partir del listado de `specs/` en el contexto de sesión. Tomá el número más alto existente y sumale uno, con cero a la izquierda hasta dos dígitos. Si el último es `02-powerups.md`, este será `03-`. Si `specs/` está vacío o no existe, empezá en `01-`.
 2. Generá un slug corto en kebab-case a partir del objetivo (ej.: `levels-and-highscores`). Ver **Argumentos** más abajo para cuando `$ARGUMENTS` es el slug en lugar de la descripción.
 3. Usá la fecha del contexto de sesión de arriba para el campo `**Date:**`. **Nunca escribas una fecha que no hayas leído de ahí.**
-4. Escribí el archivo directamente en `specs/NN-slug.md` con todas las secciones. **No pidas permiso para escribirlo ni preguntes si el nombre del archivo está bien** — anunciá la ruta en la confirmación final. Solo preguntá si el archivo destino ya existe.
-5. Marcá el estado como `Draft` por defecto (o la palabra equivalente usada por las specs existentes en este repo). **No lo marques como `Approved` automáticamente** — eso lo hace el usuario una vez que la haya releído.
+4. Escribí el archivo directamente en `specs/NN-slug.md` con todas las secciones. **No pidas permiso para escribirlo ni preguntes si el nombre del archivo está bien** - anunciá la ruta en la confirmación final. Solo preguntá si el archivo destino ya existe.
+5. Marcá el estado como `Draft` por defecto (o la palabra equivalente usada por las specs existentes en este repo). **No lo marques como `Approved` automáticamente** - eso lo hace el usuario una vez que la haya releído.
 6. Si el encabezado lista dependencias (`**Depends on:** SPEC 01`), verificá que cada spec referenciada exista realmente en `specs/`. Si alguna no existe, decilo en vez de escribir una referencia colgante.
-7. **Sembrá el archivo de configuración si no existe.** Verificá `specs/.spec-config.yml`. Si **falta**, creálo con el contenido por defecto de abajo. Si **ya existe, dejalo intacto** — nunca sobrescribas la configuración del usuario.
+7. **Sembrá el archivo de configuración si no existe.** Verificá `specs/.spec-config.yml`. Si **falta**, creálo con el contenido por defecto de abajo. Si **ya existe, dejalo intacto** - nunca sobrescribas la configuración del usuario.
 
    ```yaml
    # configuración del flujo de spec
    #
-   # AutoCreateBranch — controla si /spec-impl crea la rama de git automáticamente.
+   # AutoCreateBranch - controla si /spec-impl crea la rama de git automáticamente.
    #   true  (default) → /spec-impl crea y cambia a spec-NN-slug sin preguntar
    #   false           → /spec-impl pide confirmación [y/N] antes de crear la rama
    AutoCreateBranch: false
    ```
 
-8. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (la spec creada), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (spec escrita y guardada) y Relevant Files (la ruta del `.md`).
-9. Confirmale al usuario:
+8. **Sincronizá el roadmap solo si identificaste un ítem inequívoco en la Fase 1.** En `specs/00-roadmap.md`:
+   - reemplazá `Estado: Pendiente` por `Estado: Especificada` en ese ítem;
+   - reemplazá `Spec: todavía no creada` por la ruta real de la spec;
+   - actualizá `Updated` con la fecha del contexto;
+   - si estaba `Planning`, cambialo a `Active`.
+   No agregues una entrada al historial: crear y vincular una spec es progreso normal, no una revisión estructural. No modifiques otros ítems ni sincronices por nombre aproximado.
+9. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (la spec creada), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (spec escrita y guardada) y Relevant Files (la ruta del `.md`).
+10. Confirmale al usuario:
    - Ruta del archivo creado.
    - Recordatorio: la spec está en estado `Draft`. Cambiala a `Approved` una vez que la hayas releído.
+   - Si se sincronizó un roadmap, mencioná el slug vinculado. Si había un roadmap pero no una coincidencia inequívoca, aclarale que la spec quedó independiente.
    - Si acabás de crear `specs/.spec-config.yml`, mencioná que existe y que `AutoCreateBranch` tiene por defecto `true` (poné `false` si querés controlar vos mismo la creación de ramas).
    - Próximo paso: una vez revisada y aprobada, ejecutar `/spec-impl NN-slug` para implementarla.
    - **Parar acá.** No propongas implementar la spec, escribir código, ni tomar ninguna acción más allá de esta confirmación.
@@ -158,10 +172,13 @@ Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las 
 
 - **Nunca escribir código durante este comando.** Solo el archivo `.md` de la spec al final.
 - **Nunca proponer implementar la spec después de guardarla.** Tu trabajo termina cuando el archivo está escrito. El usuario ejecuta `/spec-impl` cuando esté listo.
-- **Nunca asumir decisiones que el usuario no confirmó.** Si te falta información, preguntá — en la Fase 2, que es donde pertenecen las preguntas.
+- **Nunca asumir decisiones que el usuario no confirmó.** Si te falta información, preguntá - en la Fase 2, que es donde pertenecen las preguntas.
 - **No vuelvas a preguntar en la Fase 3 lo que ya se respondió en la Fase 2.** Si la información está completa, escribí toda la spec y guardala. La confirmación sección por sección es el respaldo para información incompleta, no el default.
 - **Si el usuario quiere acelerar y saltearse la Fase 2**, recordale: "Las preguntas ahora ahorran horas después. ¿Estás seguro de que querés saltearlas?". Si insiste, respetá su decisión pero registralo en la sección de decisiones de la spec ("Definición rápida sin clarificación detallada").
 - **Si la feature es demasiado grande** (no entra en una oración, toca más de tres áreas del sistema, requiere decisiones en cuatro o más dominios), proponé dividirla en dos o más specs antes de continuar.
+- **El roadmap nunca es requisito.** No crees uno desde `/spec-init`, no reabras uno `Complete` y no agregues una feature puntual a un plan histórico.
+- **No promociones ideas futuras implícitamente.** Ese es un cambio estructural y pertenece a `/spec-plan`.
+- **Puntuación:** nunca uses el carácter de guion largo. Usá siempre `-`.
 
 ## Tono al hacer preguntas
 
@@ -179,6 +196,6 @@ Ejemplo de un bloque bien formado:
 
 `$ARGUMENTS` es **la descripción de la feature**, no el nombre del archivo. Tratalo como el punto de partida para la Fase 1 y derivá el slug del objetivo en la Fase 4.
 
-La única excepción: si `$ARGUMENTS` ya es un único token en kebab-case sin espacios (ej.: `/spec-init levels-and-highscores`), es ambiguo entre una descripción y un slug — usalo como slug **y** como semilla de la descripción, sin pedir confirmación.
+La única excepción: si `$ARGUMENTS` ya es un único token en kebab-case sin espacios (ej.: `/spec-init levels-and-highscores`), es ambiguo entre una descripción y un slug - usalo como slug **y** como semilla de la descripción, sin pedir confirmación.
 
 Si invocaron `/spec-init` sin argumentos, empezá pidiendo la descripción en una oración.

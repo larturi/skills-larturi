@@ -3,7 +3,7 @@ name: discover-external-services-ecommerce
 description: Descubre los servicios externos (dependencias) que consume el monorepo de ecommerce, analizando el código Go para identificar clients HTTP, URLs, credenciales y payloads. Usar cuando se necesite identificar y listar los endpoints de servicios externos antes de generar colecciones de Postman. Complementa al skill generate-external-tests.
 ---
 
-# Descubrimiento de Servicios Externos — Monorepo de Ecommerce
+# Descubrimiento de Servicios Externos - Monorepo de Ecommerce
 
 ## Objetivo
 
@@ -31,21 +31,21 @@ toolset/go/testing/internal/http_recorder.go     # HTTP recorder (go-vcr) para t
 
 ## Proveedores externos conocidos
 
-- `mulesoft` — Gateway API (pagos, órdenes, stock, shipping, eSIM, débito automático, etc.)
-- `salesforce` — CRM (órdenes, offerings, promotions financieras)
-- `dxp` — Plataforma DXP (stocks, comunicaciones, notificaciones)
-- `personal_pay` — Pagos con Personal Pay
-- `idp` — Identity Provider (OTP, tokens de sesión)
-- `google_cloud_platform` — Consent policies
-- `google_analytics` — Analytics
-- `martech` — Productos similares (recomendaciones)
-- `graphql` — Servicio OTT
-- `aem` — Adobe Experience Manager (assets)
-- `recaptcha` — Validación reCAPTCHA
-- `appointment` — Turnos
-- `lead_collector` — Captura de leads
-- `threescale` — API management
-- `mosa` — Servicio MOSA
+- `mulesoft` - Gateway API (pagos, órdenes, stock, shipping, eSIM, débito automático, etc.)
+- `salesforce` - CRM (órdenes, offerings, promotions financieras)
+- `dxp` - Plataforma DXP (stocks, comunicaciones, notificaciones)
+- `personal_pay` - Pagos con Personal Pay
+- `idp` - Identity Provider (OTP, tokens de sesión)
+- `google_cloud_platform` - Consent policies
+- `google_analytics` - Analytics
+- `martech` - Productos similares (recomendaciones)
+- `graphql` - Servicio OTT
+- `aem` - Adobe Experience Manager (assets)
+- `recaptcha` - Validación reCAPTCHA
+- `appointment` - Turnos
+- `lead_collector` - Captura de leads
+- `threescale` - API management
+- `mosa` - Servicio MOSA
 
 ## Listar y seleccionar endpoints
 

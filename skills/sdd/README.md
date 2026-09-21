@@ -33,7 +33,9 @@ Las cuatro skills están agrupadas porque cubren fases consecutivas de un mismo 
 /spec-init <primer ítem del roadmap>
 /spec-impl NN-slug
 /spec-pre-commit
-#  ... marcar el ítem como Hecho en specs/00-roadmap.md y pasar al siguiente ...
+#  ... spec-impl sincroniza el ítem vinculado; pasar al siguiente ...
 ```
 
 `spec-impl` requiere una spec generada por `spec-init` con estado `Approved`. `spec-pre-commit` es independiente y puede usarse en cualquier commit, spec o no. `spec-plan` es opcional y solo aporta valor cuando el trabajo no entra en una sola spec.
+
+Cuando hay un roadmap activo y un vínculo inequívoco, `spec-init` y `spec-impl` sincronizan el archivo de spec y el estado del ítem. Sin roadmap, con un roadmap ya completo o para una feature puntual que no pertenece al plan, ambas skills funcionan de forma independiente y no alteran el roadmap histórico.

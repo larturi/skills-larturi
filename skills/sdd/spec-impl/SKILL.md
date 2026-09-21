@@ -3,12 +3,15 @@ name: spec-impl
 description: 'Implementa una spec aprobada. Valida que el estado signifique "Approved" (en cualquier idioma); solo si AutoCreateBranch esta en true crea una rama de git con el nombre de la spec, cambia a ella, y arranca la implementación paso a paso con pausas para revisar los diffs. Caso contrario no pregunta nada y trabaja directo en la rama main.'
 disable-model-invocation: true
 argument-hint: <NN-nombre-spec>
-allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Agent, SendMessage, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_context, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
+allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Agent, SendMessage, Bash(git status:*), Bash(git branch:*), Bash(git checkout:*), Bash(git log:*), Bash(git diff:*), Bash(git stash:*), Bash(cat:*), Bash(ls:*), Bash(date:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_context, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
 ---
 
-# /spec-impl — Implementador de specs aprobadas
+# /spec-impl - Implementador de specs aprobadas
 
 ## Contexto de sesión
+
+Fecha de hoy (usar esta al actualizar el roadmap, nunca adivinarla):
+!`date +%F`
 
 Estado actual del repositorio:
 !`git status --short`
@@ -27,28 +30,28 @@ Configuración de creación de rama:
 ## Instrucciones
 
 Seguí estas cinco fases en orden estricto. **No avances a la fase siguiente si la anterior no se completó correctamente.**
-
+-
 ---
+-
+### Fase 0 - Detectar si hay memoria persistente (Engram)
 
-### Fase 0 — Detectar si hay memoria persistente (Engram)
-
-Antes de identificar la spec, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_context`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
+Antes de identificar la spec, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_context`, `mem_save`, `mem_session_summary` - se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
 
 - **Si Engram está disponible:** vas a usarlo durante el resto de la implementación (Fase 3 y Fase 4) para buscar contexto previo relevante y guardar de forma proactiva las decisiones, bugs y convenciones no obvias que vayan apareciendo. No hace falta avisarle nada al usuario por esto, salvo que encuentres contexto previo relevante para la spec (ver Fase 3).
-- **Si Engram NO está disponible** (no hay protocolo de Engram activo en esta sesión): decíselo al usuario en una sola línea, sin bloquear el flujo, y seguí:
+- **Si Engram NO está disponible** (no hay proto-olo de Engram activo en esta sesión): decíselo al usuario en una sola línea, sin bloquear el flujo, y seguí:
 
   ```
-  ℹ️ No tenés Engram configurado en esta sesión — voy a implementar la spec sin
+  ℹ️ No tenés Engram configurado en esta sesión - voy a implementar la spec sin
   guardar memoria persistente entre sesiones (decisiones, bugs y convenciones
   van a quedar solo en este chat). Si querés que las próximas implementaciones
   arranquen con ese contexto, activá el plugin engram.
   ```
 
   No insistas ni lo vuelvas a mencionar en el resto de la ejecución.
-
+-
 ---
 
-### Fase 1 — Identificar la spec
+### Fase 1 - Identificar la spec
 
 El argumento recibido es: `$ARGUMENTS`
 
@@ -62,17 +65,18 @@ Si `$ARGUMENTS` tiene un valor:
 
 - Buscá el archivo en `specs/`. El usuario puede haber escrito el nombre completo (`01-mvp-arkanoid`), solo el número (`01`), o solo el slug (`mvp-arkanoid`). Intentá encontrar el archivo correcto en cualquiera de esos casos.
 - Si no encontrás el archivo, mostrá las specs disponibles y pedile al usuario que corrija el nombre.
-- Si lo encontrás, continuá a la Fase 2.
+- Si lo encontrás, comprobá si existe `specs/00-roadmap.md`. La integración es opcional: solo conservá internamente un vínculo si el roadmap está `Active` y contiene la ruta exacta de esta spec en el campo `Spec` de un único ítem. No busques coincidencias aproximadas por slug durante la implementación. Si no hay roadmap, está `Complete`, `Planning` o `Paused`, o no hay un vínculo exacto y único, continuá sin modificarlo.
+- Después c-ntinuá a la Fase 2.
 
 ---
 
-### Fase 2 — Validar el estado de la spec
+### Fase 2 - Validar el estado de la spec
 
-Leé el archivo de spec que ubicaste en la Fase 1 usando la herramienta Read o `cat`.
+Leé el archivo de spec que ubicaste en la Fase 1 usando la herramienta Read o `-at`.
 
 En el contenido del archivo, buscá la línea que contiene el estado de la spec. La etiqueta del encabezado típicamente es `**Status:**` (inglés) o `**Estado:**` (español), pero puede estar en cualquier idioma. Identificala por posición (línea de estado cerca del inicio de la spec) y por la máquina de estados circundante, no por la etiqueta exacta.
 
-**Regla absoluta:** Solo podés continuar si el estado **significa "Approved"** — sin importar el idioma usado.
+**Regla absoluta:** Solo podés continuar si el estado **significa "Approved"** - sin importar el idioma usado.
 
 Tratá cualquiera de los siguientes (y sus equivalentes en otros idiomas) como el estado **Approved** y continuá:
 
@@ -89,11 +93,11 @@ Cualquier otra cosa (Draft / Borrador, In review / En revisión, Implemented / I
 | Categoría de estado                          | Ejemplos (cualquier idioma)                        | Acción                                                                        |
 | --------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------ |
 | Approved                                      | `Approved`, `Aprobado`, `Aprovado`, `Approuvé`, …  | Continuar a la Fase 3.                                                        |
-| Draft                                         | `Draft`, `Borrador`, …                              | Parar. Mostrar el mensaje de error de abajo.                                  |
+| Draft                                         | `Draft-, `Borrador`, …                              | Parar. Mostrar el mensaje de error de abajo.                                  |
 | In review                                     | `In review`, `En revisión`, …                       | Parar. Mostrar el mensaje de error de abajo.                                  |
 | Implemented                                   | `Implemented`, `Implementado`, …                    | Parar. Mostrar el mensaje de error de abajo.                                  |
 | Obsolete                                      | `Obsolete`, `Obsoleto`, …                            | Parar. Mostrar el mensaje de error de abajo.                                  |
-| Línea de estado no encontrada / valor no reconocido | —                                              | Parar. El archivo no sigue el formato esperado. Decírselo al usuario.         |
+| Línea de estado no encontrada / valor no reconocido | -                                              | Parar. El archivo no sigue el formato esperado. Decírselo al usuario.         |
 
 Si no estás seguro de si un valor significa "aprobado", **no asumas**. Parar y pedirle al usuario que aclare o que actualice la spec con la redacción canónica.
 
@@ -113,21 +117,21 @@ Para continuar tenés dos opciones:
   2. Si la spec todavía necesita trabajo, usá /spec-init [nombre] para retomarla.
 ```
 
-No ofrezcas alternativas, no sugieras "puedo arrancar igual si querés". El bloqueo es intencional.
+No ofrezcas-alternativas, no sugieras "puedo arrancar igual si querés". El bloqueo es intencional.
 
 ---
 
-### Fase 3 — Crear la rama de git y cambiar a ella (por defecto no crear la rama, solo si AutoCreateBranch: true)
+### Fase 3 - Crear la rama de git y cambiar a ella (por defecto no crear la rama, solo si AutoCreateBranch: true)
 
 Una vez que confirmaste que el estado significa `Approved`:
 
 0. **Verificá primero el working tree.** Mirá la salida de `git status --short` en el contexto de sesión de arriba. Si **no está vacía**, parar y mostrar los cambios pendientes, después preguntar:
 
-   ```
+   ```-
    ⚠️ Hay cambios sin commitear en el working tree.
    Cambiar de rama los va a arrastrar. ¿Qué querés hacer?
      1. Commitearlos o guardarlos con stash vos mismo, y volver a correr este comando  (recomendado)
-     2. Continuar igual — los cambios viajan a la rama nueva
+     2. Continuar igual - los cambios viajan a la rama nueva
    ```
 
    Esperar la respuesta. **No hagas stash ni commit en nombre del usuario** a menos que lo pida explícitamente. Si el working tree está limpio, saltá directo al paso 1 sin mencionarlo.
@@ -161,39 +165,41 @@ Una vez que confirmaste que el estado significa `Approved`:
    ```
 
 4. **Si Engram está disponible** (ver Fase 0): antes de mostrar el resumen, llamá `mem_search` con el nombre/slug de la spec y palabras clave de su objetivo, para ver si hay decisiones, bugs o convenciones de sesiones anteriores relacionados con esta feature. Si aparece algo relevante, mencionáselo al usuario junto con el resumen (p. ej. "Encontré en la memoria que la vez pasada se decidió X").
-
-5. **Todavía no empieces a implementar.** Primero mostrale al usuario el resumen de la spec para que la tenga fresca. Extraé y mostrá:
+-
+5. **Todavía no empieces a implementar.** Primero m-strale al usuario el resumen de la spec para que la tenga fresca. Extraé y mostrá:
    - El **objetivo** (la línea después de `**Objective:**` / `**Objetivo:**` / equivalente).
-   - El **alcance** (la sección `## Scope` / `## Alcance` / equivalente).
-   - El **plan de implementación** (la sección con los pasos numerados — `## Implementation plan` / `## Plan de implementación` / equivalente).
-   - Los **criterios de aceptación** (el checklist — `## Acceptance criteria` / `## Criterios de aceptación` / equivalente).
+   - El **alcance** (la sección `## Scope` / `## Alcance` / equivalente).-
+   - El **plan de implementación** (la sección con los pasos numerados - `## Implementation plan` / `## Plan de implementación` / equivalente).
+   - Los **criterios de aceptación** (el checklist - `## Acceptance criteria` / `## Criterios de aceptación` / equivalente).
 
-Identificá los títulos de sección por significado, no por redacción exacta — la spec puede estar escrita en cualquier idioma.
+Identificá -os títulos de sección por significado, no por redacción exacta - la spec puede estar escrita en cualquier idioma.
 
 ---
 
-### Fase 4 — Implementar paso a paso (delegado a subagentes fork)
+### Fase 4 - Implementar paso a paso (delegado a subagentes fork)
 
 Después de mostrar el resumen de la spec, decile al usuario:
-
+-
 ```
 Voy a implementar la spec siguiendo el plan de implementación exactamente.
 Cada paso lo delego a un subagente (fork) para no acumular en esta conversación
-el ruido de cada lectura/edición/test — vos y yo solo vemos el resumen y el diff.
+el ruido de cada lectura/edición/test - vos y yo solo vemos el resumen y el diff.
 Voy a pausar después de cada paso para que lo revises.
 
 ¿Arrancamos con el Paso 1?
-```
+```---
 
-Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No empezar sin ella.
+Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No empezar sin ella.-
 
-**Por qué delegar a un fork:** cada paso del plan típicamente implica leer varios archivos, editarlos, correr typecheck/lint/tests y a veces arreglar tests existentes que el cambio rompió. Ese trabajo genera mucho ruido de herramientas que no aporta nada a la conversación una vez terminado — solo el resultado importa. Un fork (Agent tool, `subagent_type: "fork"`) hereda toda esta conversación (la spec, las convenciones ya descubiertas, las decisiones ya tomadas) así que no necesita re-explicación, comparte el cache de contexto, y su ruido de herramientas queda fuera de esta conversación. Esto no acelera el reloj de pared — los pasos son secuenciales y cada uno puede depender del anterior — pero evita que specs largas de muchos pasos terminen compactando o saturando el contexto a mitad de camino. El fork corre en el mismo working directory que el coordinador (sin aislamiento de worktree): edita el repo real.
+Cuando el usuario confirme que arranca el Paso 1, si en la Fase 1 encontraste un ítem de roadmap vinculado de forma exacta y única, actualizá solamente ese ítem a `Estado: En progreso` y el campo `Updated` del roadmap con la fecha actual. No agregues una entrada al historial: es una transición operativa, no una revisión estructural. Si la implementación se interrumpe o falla, dejá `En progreso`, porque describe correctamente el estado real.
 
-**Regla:** un fork por paso, nunca en paralelo. No lances el fork del Paso N+1 hasta que el Paso N esté confirmado por el usuario. Incluso un paso que parezca trivial conviene delegarlo igual, para no romper la consistencia del flujo — el costo de un fork es bajo porque comparte tu cache.
+**Por qué delegar a un fork:** cada paso del plan típicamente implica leer varios archivos, e-itarlos, correr typecheck/lint/tests y a vece- arreglar tests existentes que el cambio rompió. Ese trabajo genera mucho ruido de herramientas que no aporta nada a la conversación una vez terminado - solo el resultado importa. Un fork (Agent tool, `subagent_type: "fork"`) hereda toda esta conversación (la spec, las convenciones ya descubiertas, las decisiones ya tomadas) así que no necesita re-explicación, comparte el cache de contexto, y su ruido de herramientas queda fuera de esta conversación. Esto no acelera el reloj de pared - los pasos son secuenciales y cada uno puede depender del anterior - pero evita que specs largas de muchos pasos terminen compactando o saturando el contexto a mitad de camino. El fork corre en el mismo working directory que el coordinador (sin aislamiento de worktree): edita el repo real.
+
+**Regla:** un fork por paso, nunca en paralelo. No lances el fork del Paso N+1 hasta que el Paso N esté confirmado por el usuario. Incluso un paso que parezca trivial conviene delegarlo igual, para no romper la consistencia del flujo - el costo de un fork es bajo porque comparte tu cache.
 
 **Cómo delegar cada paso:**
 
-1. Armá un prompt de fork directivo y acotado a ese paso específico (no repitas toda la spec — el fork ya la tiene en su contexto heredado — pero sé explícito sobre el alcance exacto y lo que tiene que reportar):
+1. Armá un prompt de fork directivo y acotado a ese paso específico (no repitas toda la spec - el fork ya la tiene en su contexto heredado - pero sé explícito sobre el alcance exacto y lo que tiene que reportar):
 
    ```
    Implementá exactamente el Paso <N> del plan de implementación de la spec
@@ -202,13 +208,13 @@ Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No 
 
    Alcance estricto: solo este paso. No toques nada que corresponda a otro
    paso del plan, aunque lo veas relacionado o rompiendo la compilación por
-   ahora.
+   ahora.-
 
    Antes de reportar terminado:
    - Corré el typecheck y el linter del proyecto sobre el código tocado
      (revisá package.json si no sabés los comandos exactos).
    - Corré la suite de tests relevante (o completa si es rápida) y arreglá
-     cualquier test existente que tu cambio haya roto — no lo dejes para
+     cualquier test existente que tu cambio haya roto - no lo dejes para
      después.
    - Nunca corras comandos de Prisma migrate/db push/studio ni ningún
      comando destructivo o que afecte sistemas compartidos: si hace falta
@@ -224,30 +230,30 @@ Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No 
    Reportá en tu mensaje final (es lo único que va a leer el coordinador,
    sé completo pero conciso):
    - Lista de archivos tocados, con una línea de qué cambiaste en cada uno.
-   - Resultado de typecheck/lint/tests.
+   - Resultado de typecheck/lint/tests.-
    - Cualquier ambigüedad, desvío del plan u observación relevante.
    ```
 
-2. Lanzá el fork: `Agent({ subagent_type: "fork", name: "spec-impl-paso-<N>", description: "Implementar Paso <N> de la spec", prompt: <lo de arriba> })`.
+2. Lanzá el fork: `Agent({ subagent_type: "fork", name: "spec-impl-paso-<N>", description: "Implementar Paso <N> de la spec", prompt: <lo de arriba> })`.--
 
-3. Avisale al usuario en una línea que estás trabajando en el paso (p. ej. "Trabajando en el Paso <N>...") y terminá el turno. No inventes progreso ni resultado mientras el fork corre — la notificación llega sola en un turno posterior.
+3. Avisale al usuario en una línea que estás trabajando en el paso (p. ej. "Trabajando en el Paso <N>...") y terminá el turno. No inventes progreso ni resultado mientras el fork corre - la notificación llega sola en un turno posterior.
 
 4. Cuando llegue la notificación del fork:
 
-   - **Si reportó una ambigüedad bloqueante:** no la resuelvas vos. Presentale al usuario la ambigüedad y las opciones tal como las trajo el fork (podés usar `AskUserQuestion`). Cuando el usuario decida, retomá **el mismo fork** — no lances uno nuevo para el mismo paso — con `SendMessage({ to: "spec-impl-paso-<N>", message: "<la decisión del usuario>" })` para que termine el trabajo.
-   - **Si terminó el paso:** mostrale al usuario el resumen que trajo el fork (archivos tocados + resultado de verificación) y decile:
+   - **Si reportó una ambigüedad bloqueante:** no la resuelvas vos. Presentale al usuario la ambigüedad y las opciones tal como las trajo el fork (podés usar `AskUserQuestion`). Cuando el usuario decida, retomá **el mismo fork** - no lances uno nuevo para el mismo paso - con `SendMessage({ to: "spec-impl-paso-<N>", message: "<la decisión del usuario>" })` para que termine el trabajo.
+   - **Si terminó el paso:** mostrale al usuario el resumen que trajo el fork (archivos tocados + resultado de verificación) y decile:-
 
      ```
      Paso N completado. ¿Podés revisar el diff y avisarme si sigo con el Paso N+1?
      ```
 
-   - **Si Engram está disponible** (ver Fase 0): revisá el reporte del fork antes de pedir la confirmación. Si menciona una decisión no obvia, un bug arreglado (con su causa raíz), una convención nueva o una ambigüedad que el usuario terminó resolviendo, guardalo con `mem_save`. No guardes ruido (qué archivos se tocaron, resultados de test que pasaron sin drama) — solo lo que le sirva de contexto a una sesión futura.
+   - **Si Engram está disponible** (ver Fase 0): revisá el reporte del fork antes de pedir la confirmación. Si menciona una decisión no obvia, un bug arreglado (con su causa raíz), una convención nueva o una ambigüedad que el usuario terminó resolviendo, guardalo con `mem_sa-e`. No guardes ruido (qué archivos se tocaron, resultados de test que pasaron sin drama) - solo lo que le sirva de contexto a una sesión futura.
 
    - Esperar confirmación antes de lanzar el fork del paso siguiente.
 
 **Nunca commitear automáticamente.** Ni el coordinador ni los forks. Ni por paso, ni al final. Vos escribís el código y mostrás el diff; commitear es decisión del usuario y orden del usuario. Solo commitear si lo pide explícitamente.
 
-**Una regla por encima de todas:** implementá lo que dice la spec. Si algo en la spec te parece subóptimo, mencionalo como observación pero implementá lo acordado. Los cambios a la spec van en la spec, no en el código por sorpresa. Esto aplica también al prompt de cada fork — dejale claro que implemente la spec tal cual, no una versión mejorada.
+**Una regla por encima de todas:** implementá lo que dice la spec. Si algo en la spec te parece subóptimo, mencionalo como observación pero implementá lo acordado. Los cambios a la spec van en la spec, no en el código por sorpresa. Esto aplica también al prompt de cada fork - dejale claro que implemente la spec tal cual, no una versión mejorada.
 
 **Si el usuario pide algo que está fuera del alcance de la spec:**
 
@@ -257,17 +263,26 @@ Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No 
 
 **Al terminar el último paso:**
 
-Si Engram está disponible (ver Fase 0), llamá `mem_session_summary` antes del mensaje final, con Goal (la spec implementada), Discoveries (lo guardado paso a paso con `mem_save` durante la Fase 4), Accomplished (los pasos completados), Next Steps (verificar criterios de aceptación, correr `/spec-pre-commit`) y Relevant Files (los archivos tocados a lo largo de la implementación).
+1. Mostrá los criterios de aceptación de la spec como checklist y pedile al usuario que confirme cuáles fueron verificados. No marques la spec como implementada mientras quede alguno sin verificar.
+2. Cuando el usuario confirme que todos pasan:
+   - actualizá el estado de la spec a `Implemented` o el equivalente que use el documento;
+   - si hay un ítem de roadmap vinculado exactamente, cambialo a `Estado: Hecho` y actualizá `Updated`;
+   - si todos los ítems comprometidos del roadmap quedaron `Hecho`, cambiá su estado general a `Complete`;
+   - no agregues una entrada al historial por estas transiciones operativas.
+3. Si Engram está disponible (ver Fase 0), llamá `mem_session_summary` antes del mensaje final, con Goal (la spec implementada), Discoveries (lo guardado paso a paso con `mem_save` durante la Fase 4), Accomplished (los pasos completados), Next Steps (correr `/spec-pre-commit`) y Relevant Files (los archivos tocados a lo largo de la implementación).
 
 ```
 ✅ Todos los pasos del plan están implementados.
 
-Próximo paso: verificar los criterios de aceptación de la spec uno por uno.
-Si todos pasan, actualizá el estado de la spec a "Implemented" (o el equivalente
-en el idioma de tu repo).
+Los criterios de aceptación fueron verificados y la spec quedó en "Implemented"
+(o el equivalente en el idioma del repo).
 
 Antes del commit final, corré /spec-pre-commit sobre los cambios staged.
 ```
+
+Si no todos los criterios están verificados, cerrá en cambio con los criterios pendientes; mantené la spec en `Approved` y el ítem vinculado en `En progreso`.
+
+**Regla de estilo:** nunca uses el carácter de guion largo. Usá siempre `-`.
 
 ---
 
@@ -277,12 +292,12 @@ Antes del commit final, corré /spec-pre-commit sobre los cambios staged.
 /spec-impl 01-mvp-arkanoid
 
   Fase 1  →  Encuentra specs/01-mvp-arkanoid.md
-  Fase 2  →  Lee el estado → "Approved" (o "Aprobado", etc.) → ✅ continúa
+  Fase 2  →  Lee el estado → "Approved" (o "Aprobado", etc.) → ✅ continúa-
   Fase 3  →  git checkout -b spec-01-mvp-arkanoid → git checkout spec-01-mvp-arkanoid
               Muestra objetivo, alcance, plan y criterios
   Fase 4  →  Delega cada paso a un fork, pausa después de cada uno
-              Termina recordando verificar los criterios de aceptación
-              y correr /spec-pre-commit antes del commit final
+              Verifica los criterios de aceptación, marca la spec como Implemented
+              y sincroniza el ítem vinculado antes de /spec-pre-commit
 
 /spec-impl 02-powerups  (estado: Draft / Borrador)
 
@@ -292,4 +307,4 @@ Antes del commit final, corré /spec-pre-commit sobre los cambios staged.
               No crea rama, no toca código
 ```
 
-**La creación de rama está controlada por el flag `AutoCreateBranch`** en `specs/.spec-config.yml`. Por defecto es `true` (crea la rama automáticamente, como se muestra arriba). Ponelo en `false` para que la Fase 3 no cree ninguna rama ni pregunte nada — trabaja directo en `main`.
+**La creación de rama está controlada por el flag `AutoCreateBranch`** en `specs/.spec-config.yml`. Por defecto es `true` (crea la rama automáticamente, como se muestra arriba). Ponelo en `false` para que la Fase 3 no cree ninguna rama ni pregunte nada - trabaja directo en `main`.

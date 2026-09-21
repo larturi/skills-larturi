@@ -1,6 +1,6 @@
 # Plantilla para una spec útil
 
-Este archivo es la referencia que consulta el skill `/spec-init` al generar specs. Cada sección incluye su propósito y un ejemplo mínimo. **No es texto para copiar textualmente** — es la forma que el skill debe respetar.
+Este archivo es la referencia que consulta el skill `/spec-init` al generar specs. Cada sección incluye su propósito y un ejemplo mínimo. **No es texto para copiar textualmente** - es la forma que el skill debe respetar.
 
 ---
 
@@ -9,7 +9,7 @@ Este archivo es la referencia que consulta el skill `/spec-init` al generar spec
 Toda spec arranca con metadata en formato blockquote (sin tablas, sin bloques, simple como se muestra abajo):
 
 ```markdown
-# SPEC NN — Título corto y descriptivo
+# SPEC NN - Título corto y descriptivo
 
 > **Status:** Draft
 > **Depends on:** SPEC 01, SPEC 02
@@ -25,15 +25,15 @@ Toda spec arranca con metadata en formato blockquote (sin tablas, sin bloques, s
 
 ---
 
-## Sección 1 — Por qué existe esta spec (opcional)
+## Sección 1 - Por qué existe esta spec (opcional)
 
-Para specs que toman decisiones no obvias o rompen patrones del proyecto, una sección breve explicando el **por qué** del trabajo. No el qué — el qué viene después.
+Para specs que toman decisiones no obvias o rompen patrones del proyecto, una sección breve explicando el **por qué** del trabajo. No el qué - el qué viene después.
 
 Para specs simples, omitirla.
 
 ---
 
-## Sección 2 — Alcance
+## Sección 2 - Alcance
 
 Dos sub-bloques explícitos. **Ambos son obligatorios.**
 
@@ -55,7 +55,7 @@ Dos sub-bloques explícitos. **Ambos son obligatorios.**
 
 ---
 
-## Sección 3 — Modelo de datos
+## Sección 3 - Modelo de datos
 
 Las estructuras concretas que aparecen o cambian. Usá código real, no pseudocódigo abstracto.
 
@@ -81,7 +81,7 @@ Si la feature no introduce datos nuevos, escribilo explícitamente: _"Esta featu
 
 ---
 
-## Sección 4 — Plan de implementación
+## Sección 4 - Plan de implementación
 
 Pasos numerados. Cada paso debe dejar el sistema en un estado **funcional y ejecutable**. Nada de "implementar la mitad y seguir mañana".
 
@@ -98,11 +98,11 @@ Pasos numerados. Cada paso debe dejar el sistema en un estado **funcional y ejec
 
 - Cada paso debe poder commitearse por sí solo.
 - Si un paso requiere más de 30–50 líneas de código, dividilo.
-- El último paso del plan **no** es "testear todo" — eso son los criterios de aceptación.
+- El último paso del plan **no** es "testear todo" - eso son los criterios de aceptación.
 
 ---
 
-## Sección 5 — Criterios de aceptación
+## Sección 5 - Criterios de aceptación
 
 Checklist booleano. Cada ítem se puede verificar con sí o no.
 
@@ -123,7 +123,7 @@ Checklist booleano. Cada ítem se puede verificar con sí o no.
 
 ---
 
-## Sección 6 — Decisiones tomadas y descartadas
+## Sección 6 - Decisiones tomadas y descartadas
 
 La sección con más valor dentro de 3 meses. Capturá **qué consideraste**, no solo qué elegiste.
 
@@ -140,7 +140,7 @@ Cada decisión idealmente tiene una razón breve. Las decisiones sin razón son 
 
 ---
 
-## Sección 7 — Riesgos identificados (opcional)
+## Sección 7 - Riesgos identificados (opcional)
 
 Solo cuando hay riesgos no obvios. Tabla simple:
 
@@ -157,9 +157,9 @@ Para specs chicas o features muy acotadas, omitirla.
 
 ---
 
-## Sección final — Qué NO está incluido (refuerzo)
+## Sección final - Qué NO está incluido (refuerzo)
 
-Repetir explícitamente al final qué **no** se va a hacer en esta spec. Esta repetición es deliberada — la sección de Alcance ya lo dice, pero al final del documento sirve como recordatorio cuando alguien lee solo las últimas líneas.
+Repetir explícitamente al final qué **no** se va a hacer en esta spec. Esta repetición es deliberada - la sección de Alcance ya lo dice, pero al final del documento sirve como recordatorio cuando alguien lee solo las últimas líneas.
 
 ```markdown
 ## What is **not** in this spec
