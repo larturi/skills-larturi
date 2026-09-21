@@ -17,9 +17,11 @@ Toda spec arranca con metadata en formato blockquote (sin tablas, sin bloques, s
 > **Objective:** Una sola oración. Si necesitás dos oraciones, la feature es demasiado grande.
 ```
 
-**Estados válidos:** `Draft`, `In review`, `Approved`, `Implemented`, `Obsolete`.
+**Estados válidos:** `Draft`, `In review`, `Approved`, `Implemented`, `Implementado con observaciones`, `Released`, `Obsolete`.
 
-> Las etiquetas de arriba son los defaults en inglés. Los skills también aceptan equivalentes en cualquier idioma (ej. en español: `Borrador` / `En revisión` / `Aprobado` / `Implementado` / `Obsoleto`). Elegí un set por repo y mantené consistencia.
+> Las etiquetas de arriba son los defaults en inglés, salvo `Implementado con observaciones` y `Released` que ya están en español porque los escribe siempre este mismo harness. Los skills también aceptan equivalentes en cualquier idioma (ej. en español: `Borrador` / `En revisión` / `Aprobado` / `Implementado` / `Obsoleto`). Elegí un set por repo y mantené consistencia.
+>
+> `Implementado con observaciones` lo escribe `spec-impl` cuando su verificación final encuentra algún criterio de aceptación que no pasa. `Released` siempre es una edición manual del usuario (típicamente después de un deploy) - ninguna skill lo escribe.
 
 **Regla del objetivo:** una oración que una persona lea en 5 segundos y entienda qué se va a construir. Si no entra en una oración, dividí la feature.
 

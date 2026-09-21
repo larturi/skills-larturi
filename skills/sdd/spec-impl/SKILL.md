@@ -23,7 +23,7 @@ Specs disponibles en esta carpeta:
 !`ls specs/ 2>/dev/null || echo "La carpeta specs/ no existe"`
 
 Configuración de creación de rama:
-!`cat specs/.spec-config.yml 2>/dev/null || echo "AutoCreateBranch: true (default, sin archivo de config)"`
+!`cat specs/.spec-config.yml 2>/dev/null || echo "AutoCreateBranch: false (default, sin archivo de config)"`
 
 ---
 
@@ -143,16 +143,16 @@ Una vez que confirmaste que el estado significa `Approved`:
 
 2. Leé el flag `AutoCreateBranch` de la **configuración de creación de rama** mostrada en el contexto de sesión de arriba.
 
-   - Si el archivo de config no existe, el valor falta, o el valor no se reconoce → tratalo como `true` (el default).
-   - Solo un `false` explícito (en cualquier capitalización) deshabilita la creación automática de rama.
+   - Si el archivo de config no existe, el valor falta, o el valor no se reconoce → tratalo como `false` (el default).
+   - Solo un `true` explícito (en cualquier capitalización) habilita la creación automática de rama.
 
-   **Si `AutoCreateBranch` es `true` (default):** proceder sin preguntar.
+   **Si `AutoCreateBranch` es `false` (default):** no preguntar nada ni comentar sobre ramas. Asumí directamente que se trabaja en `main` (o `master`, la rama principal del repo) y seguí. Si la rama actual no es `main`, cambiá a `main` con `git checkout main` sin pedir confirmación. No crear ninguna rama nueva.
+
+   **Si `AutoCreateBranch` es `true`:** proceder sin preguntar.
 
    - Si la rama **no existe**: creala con `git checkout -b spec-NN-slug`.
    - Si **ya existe**: esto significa que se está retomando trabajo previo. Cambiá a ella, leé `git log --oneline` en la rama, y decile al usuario qué pasos del plan ya parecen hechos y desde cuál proponés retomar. Esperá confirmación sobre el punto de retoma antes de implementar nada.
    - En ambos casos: cambiá a la rama con `git checkout spec-NN-slug` y confirmá que el cambio fue exitoso antes de continuar.
-
-   **Si `AutoCreateBranch` es `false`:** no preguntar nada ni comentar sobre ramas. Asumí directamente que se trabaja en `main` (o `master`, la rama principal del repo) y seguí. Si la rama actual no es `main`, cambiá a `main` con `git checkout main` sin pedir confirmación. No crear ninguna rama nueva.
 
 3. Confirmale visualmente al usuario que la spec está lista y qué rama está activa:
 
@@ -174,28 +174,36 @@ Una vez que confirmaste que el estado significa `Approved`:
 
 Identificá -os títulos de sección por significado, no por redacción exacta - la spec puede estar escrita en cualquier idioma.
 
+6. **Confirmación explícita antes de arrancar.** Usá `AskUserQuestion` para confirmar que el usuario está de acuerdo con cómo va a correr la implementación. La pregunta debe declarar estas cuatro condiciones con los datos concretos de esta ejecución (nombre de la spec, rama activa):
+
+   ```
+   Voy a implementar "<NN-slug>" así:
+     - Corro todos los pasos del plan seguidos, sin pausar entre pasos
+       (salvo que un fork reporte una ambigüedad bloqueante).
+     - Trabajo en la rama <rama activa>.
+     - Al terminar el último paso, corro una verificación final de punta
+       a punta contra los criterios de aceptación.
+     - Marco la spec como Implemented (o Implementado con observaciones,
+       si la verificación final encuentra algo que no pasa) automáticamente.
+
+   ¿Arrancamos así?
+   ```
+
+   Ofrecé dos opciones:
+   - **Sí, dale** (recomendada): arrancá directo con el Paso 1 de la Fase 4, corriendo todos los pasos de corrido tal como se declaró.
+   - **No, quiero ajustar algo**: parate ahí y pedile al usuario que aclare qué quiere cambiar (ejemplos: pausar después de cada paso, revisar el alcance antes de arrancar). Adaptá el resto de la ejecución a lo que pida - no asumas cuál es el ajuste.
+
 ---
 
 ### Fase 4 - Implementar paso a paso (delegado a subagentes fork)
 
-Después de mostrar el resumen de la spec, decile al usuario:
--
-```
-Voy a implementar la spec siguiendo el plan de implementación exactamente.
-Cada paso lo delego a un subagente (fork) para no acumular en esta conversación
-el ruido de cada lectura/edición/test - vos y yo solo vemos el resumen y el diff.
-Voy a pausar después de cada paso para que lo revises.
+La confirmación para arrancar ya se obtuvo en la Fase 3 (punto 6) - no la vuelvas a pedir acá.
 
-¿Arrancamos con el Paso 1?
-```---
-
-Esperar confirmación explícita ("sí", "dale", "adelante", o equivalente). No empezar sin ella.-
-
-Cuando el usuario confirme que arranca el Paso 1, si en la Fase 1 encontraste un ítem de roadmap vinculado de forma exacta y única, actualizá solamente ese ítem a `Estado: En progreso` y el campo `Updated` del roadmap con la fecha actual. No agregues una entrada al historial: es una transición operativa, no una revisión estructural. Si la implementación se interrumpe o falla, dejá `En progreso`, porque describe correctamente el estado real.
+Si en la Fase 1 encontraste un ítem de roadmap vinculado de forma exacta y única, actualizá solamente ese ítem a `Estado: En progreso` y el campo `Updated` del roadmap con la fecha actual. No agregues una entrada al historial: es una transición operativa, no una revisión estructural. Si la implementación se interrumpe o falla, dejá `En progreso`, porque describe correctamente el estado real.
 
 **Por qué delegar a un fork:** cada paso del plan típicamente implica leer varios archivos, e-itarlos, correr typecheck/lint/tests y a vece- arreglar tests existentes que el cambio rompió. Ese trabajo genera mucho ruido de herramientas que no aporta nada a la conversación una vez terminado - solo el resultado importa. Un fork (Agent tool, `subagent_type: "fork"`) hereda toda esta conversación (la spec, las convenciones ya descubiertas, las decisiones ya tomadas) así que no necesita re-explicación, comparte el cache de contexto, y su ruido de herramientas queda fuera de esta conversación. Esto no acelera el reloj de pared - los pasos son secuenciales y cada uno puede depender del anterior - pero evita que specs largas de muchos pasos terminen compactando o saturando el contexto a mitad de camino. El fork corre en el mismo working directory que el coordinador (sin aislamiento de worktree): edita el repo real.
 
-**Regla:** un fork por paso, nunca en paralelo. No lances el fork del Paso N+1 hasta que el Paso N esté confirmado por el usuario. Incluso un paso que parezca trivial conviene delegarlo igual, para no romper la consistencia del flujo - el costo de un fork es bajo porque comparte tu cache.
+**Regla:** un fork por paso, nunca en paralelo. Lanzá el fork del Paso N+1 apenas el Paso N haya terminado exitosamente (sin ambigüedad bloqueante pendiente) - no hace falta esperar a que el usuario revise el diff primero. Incluso un paso que parezca trivial conviene delegarlo igual, para no romper la consistencia del flujo - el costo de un fork es bajo porque comparte tu cache.
 
 **Cómo delegar cada paso:**
 
@@ -235,6 +243,14 @@ Cuando el usuario confirme que arranca el Paso 1, si en la Fase 1 encontraste un
    final describí la ambigüedad con precisión y 2-3 opciones concretas, en
    vez de entregar una implementación completa.
 
+   Si corriste el typecheck/lint/tests, encontraste un fallo, e intentaste
+   corregirlo sin éxito (esto es distinto de una ambigüedad de diseño - es
+   un fallo real que no cede): NO sigas intentando indefinidamente ni
+   reportes que terminaste. Detené el trabajo y en tu reporte final
+   describí exactamente qué falló - el comando que corriste y el
+   error/output real - para que quien reintente este paso arranque
+   informado.
+
    Reportá en tu mensaje final (es lo único que va a leer el coordinador,
    sé completo pero conciso):
    - Lista de archivos tocados, con una línea de qué cambiaste en cada uno.
@@ -248,16 +264,19 @@ Cuando el usuario confirme que arranca el Paso 1, si en la Fase 1 encontraste un
 
 4. Cuando llegue la notificación del fork:
 
-   - **Si reportó una ambigüedad bloqueante:** no la resuelvas vos. Presentale al usuario la ambigüedad y las opciones tal como las trajo el fork (podés usar `AskUserQuestion`). Cuando el usuario decida, retomá **el mismo fork** - no lances uno nuevo para el mismo paso - con `SendMessage({ to: "spec-impl-paso-<N>", message: "<la decisión del usuario>" })` para que termine el trabajo.
-   - **Si terminó el paso:** mostrale al usuario el resumen que trajo el fork (archivos tocados + resultado de verificación) y decile:-
+   - **Si reportó una ambigüedad bloqueante:** no la resuelvas vos. Presentale al usuario la ambigüedad y las opciones tal como las trajo el fork (podés usar `AskUserQuestion`). Cuando el usuario decida, retomá **el mismo fork** - no lances uno nuevo para el mismo paso - con `SendMessage({ to: "spec-impl-paso-<N>", message: "<la decisión del usuario>" })` para que termine el trabajo. Recién cuando termine, seguí con el paso siguiente.
+   - **Si terminó el paso:** avisale al usuario en una línea corta que el paso terminó y qué archivos tocó, y lanzá directo el fork del Paso N+1 - no hace falta esperar que confirme antes de seguir. El usuario puede revisar el diff mientras el paso siguiente ya está corriendo.
 
      ```
-     Paso N completado. ¿Podés revisar el diff y avisarme si sigo con el Paso N+1?
+     Paso N completado (<archivos tocados>). Sigo con el Paso N+1.
      ```
 
-   - **Si Engram está disponible** (ver Fase 0): revisá el reporte del fork antes de pedir la confirmación. Si menciona una decisión no obvia, un bug arreglado (con su causa raíz), una convención nueva o una ambigüedad que el usuario terminó resolviendo, guardalo con `mem_sa-e`. No guardes ruido (qué archivos se tocaron, resultados de test que pasaron sin drama) - solo lo que le sirva de contexto a una sesión futura.
+   - **Si reportó un fallo de verificación que no logró resolver** (distinto de ambigüedad - typecheck/lint/tests que no cedieron): descartá ese fork - no le mandes `SendMessage`, no lo retomes. Llevá la cuenta de reintentos de ese paso (arranca en 0 con el fork original).
 
-   - Esperar confirmación antes de lanzar el fork del paso siguiente.
+     - **Si todavía no hiciste 2 reintentos:** lanzá un fork **nuevo** para el mismo Paso N (nombralo `spec-impl-paso-<N>-intento-<n>` para distinguirlo en los logs), con el mismo prompt del paso más un párrafo al principio con el error concreto que reportó el intento anterior, para que arranque informado en vez de repetir el mismo camino a ciegas.
+     - **Si ya hiciste 2 reintentos** (3 intentos en total contando el fork original) y el fallo persiste: parar, mostrarle al usuario el historial de los intentos con el error de cada uno, y preguntarle cómo seguir (`AskUserQuestion`, opciones tipo "intentar una vez más con instrucciones tuyas", "saltar este paso por ahora y anotarlo", "parar acá"). No lances un cuarto fork sin que el usuario decida.
+
+   - **Si Engram está disponible** (ver Fase 0): revisá el reporte del fork antes de lanzar el paso siguiente. Si menciona una decisión no obvia, un bug arreglado (con su causa raíz), una convención nueva o una ambigüedad que el usuario terminó resolviendo, guardalo con `mem_save`. No guardes ruido (qué archivos se tocaron, resultados de test que pasaron sin drama) - solo lo que le sirva de contexto a una sesión futura.
 
 **Nunca commitear automáticamente.** Ni el coordinador ni los forks. Ni por paso, ni al final. Vos escribís el código y mostrás el diff; commitear es decisión del usuario y orden del usuario. Solo commitear si lo pide explícitamente.
 
@@ -271,24 +290,69 @@ Cuando el usuario confirme que arranca el Paso 1, si en la Fase 1 encontraste un
 
 **Al terminar el último paso:**
 
-1. Mostrá los criterios de aceptación de la spec como checklist y pedile al usuario que confirme cuáles fueron verificados. No marques la spec como implementada mientras quede alguno sin verificar.
-2. Cuando el usuario confirme que todos pasan:
-   - actualizá el estado de la spec a `Implemented` o el equivalente que use el documento;
-   - si hay un ítem de roadmap vinculado exactamente, cambialo a `Estado: Hecho` y actualizá `Updated`;
-   - si todos los ítems comprometidos del roadmap quedaron `Hecho`, cambiá su estado general a `Complete`;
-   - no agregues una entrada al historial por estas transiciones operativas.
-3. Si Engram está disponible (ver Fase 0), llamá `mem_session_summary` antes del mensaje final, con Goal (la spec implementada), Discoveries (lo guardado paso a paso con `mem_save` durante la Fase 4), Accomplished (los pasos completados), Next Steps (correr `/spec-pre-commit`) y Relevant Files (los archivos tocados a lo largo de la implementación).
+1. **Verificación final obligatoria.** Antes de pedirle nada al usuario, lanzá un fork dedicado a verificar la implementación completa contra la spec:
+
+   ```
+   Corré una verificación final de la spec que acabamos de implementar.
+
+   1. Corré la suite COMPLETA de typecheck/lint/tests del proyecto (no
+      solo lo tocado en el último paso - el proyecto entero).
+   2. Para cada uno de estos criterios de aceptación, intentá verificarlo
+      de forma concreta (corré el comando/test que lo compruebe si existe
+      una forma automática de hacerlo):
+
+      <pegá acá la lista completa de criterios de aceptación de la spec>
+
+      Si un criterio requiere algo que no podés hacer (inspección visual,
+      interacción manual de UI, algo que depende de un entorno que no
+      tenés), marcalo como "no verificable automáticamente" - nunca
+      asumas que pasa ni que falla.
+
+   Nunca hagas commit.
+
+   Reportá en tu mensaje final un checklist claro: criterios que pasaron
+   (✅), que fallaron (❌, con el error concreto), y los no verificables
+   automáticamente (⚠️), más el resultado de typecheck/lint/tests global.
+   ```
+
+   Lanzalo con `Agent({ subagent_type: "fork", name: "spec-impl-verificacion-final", description: "Verificación final de la spec", prompt: <lo de arriba> })`. Avisale al usuario en una línea que estás corriendo la verificación final y terminá el turno - no inventes el resultado mientras corre.
+
+2. Cuando llegue el reporte del fork de verificación final, mostrale al usuario el checklist completo y seguí uno de estos tres caminos:
+
+   - **Caso A - todo pasó:** ningún criterio verificable automáticamente falló y no hay fallos de typecheck/lint/tests. Si quedaron criterios marcados "no verificable automáticamente", pedile al usuario que confirme esos puntualmente (no hace falta `AskUserQuestion` para esto, alcanza con texto simple). Cuando confirme (o si no había ninguno pendiente):
+     - actualizá el estado de la spec a `Implemented` (o el equivalente en el idioma del documento);
+     - si hay un ítem de roadmap vinculado exactamente, cambialo a `Estado: Hecho`, actualizá `Updated`, y si todos los ítems comprometidos quedaron `Hecho` cambiá el estado general del roadmap a `Complete` (sin entrada al historial, transición operativa);
+     - **nunca escribas el estado `Released`** - es siempre una edición manual posterior del usuario. Mencionalo en el mensaje final.
+
+   - **Caso B - algo no pasó:** algún criterio falló, o typecheck/lint/tests tienen fallos, o el usuario dice que algún "no verificable automáticamente" en realidad no pasa. Mostrale qué no pasó y por qué:
+     - actualizá el estado de la spec a `Implementado con observaciones` (no `Implemented`);
+     - **no sincronices el roadmap a `Hecho`** - si había un ítem vinculado, dejalo en `En progreso`;
+     - ofrecele reintentar lo que falló (podés lanzar un fork de corrección dirigido al fallo específico, mismo patrón que el rewind de un paso) o cerrar así por ahora y retomarlo después corriendo `/spec-impl` de nuevo sobre esta misma spec.
+
+   - **Caso C - hay criterios "no verificables automáticamente" y el usuario todavía no confirmó** si pasan o no: no marques ni `Implemented` ni `Implementado con observaciones` todavía - la spec queda en `Approved`. Esperá la confirmación antes de cerrar.
+
+3. Si Engram está disponible (ver Fase 0), llamá `mem_session_summary` antes del mensaje final, con Goal (la spec implementada), Discoveries (lo guardado paso a paso con `mem_save` durante la Fase 4, incluyendo el resultado de la verificación final), Accomplished (los pasos completados y el resultado de cierre), Next Steps (`/spec-finish` si quedó `Implemented`, o corregir y reintentar si quedó `Implementado con observaciones`) y Relevant Files (los archivos tocados a lo largo de la implementación).
+
+Mensaje final del Caso A:
 
 ```
-✅ Todos los pasos del plan están implementados.
+✅ Todos los pasos del plan están implementados y la verificación final pasó.
 
-Los criterios de aceptación fueron verificados y la spec quedó en "Implemented"
-(o el equivalente en el idioma del repo).
-
-Antes del commit final, corré /spec-pre-commit sobre los cambios staged.
+La spec quedó en "Implemented" (o el equivalente en el idioma del repo).
+Cuando quieras cerrar la rama, corré /spec-finish - audita los cambios y hace
+el squash-merge. El pase a "Released" es manual, cuando decidas que corresponde
+(por ejemplo, después de un deploy).
 ```
 
-Si no todos los criterios están verificados, cerrá en cambio con los criterios pendientes; mantené la spec en `Approved` y el ítem vinculado en `En progreso`.
+Mensaje final del Caso B:
+
+```
+⚠️ Todos los pasos del plan están implementados, pero la verificación final
+encontró algo que no pasa (ver el detalle arriba).
+
+La spec quedó en "Implementado con observaciones". Corregí lo que falta y
+volvé a correr /spec-impl sobre esta misma spec para reverificar.
+```
 
 **Regla de estilo:** nunca uses el carácter de guion largo. Usá siempre `-`.
 
@@ -303,9 +367,15 @@ Si no todos los criterios están verificados, cerrá en cambio con los criterios
   Fase 2  →  Lee el estado → "Approved" (o "Aprobado", etc.) → ✅ continúa-
   Fase 3  →  git checkout -b spec-01-mvp-arkanoid → git checkout spec-01-mvp-arkanoid
               Muestra objetivo, alcance, plan y criterios
-  Fase 4  →  Delega cada paso a un fork, pausa después de cada uno
-              Verifica los criterios de aceptación, marca la spec como Implemented
-              y sincroniza el ítem vinculado antes de /spec-pre-commit
+              Confirmación explícita vía AskUserQuestion (corre todo seguido,
+              rama, verificación final, cierre automático)
+  Fase 4  →  Delega cada paso a un fork, sin pausar entre pasos (salvo ambigüedad
+              o fallo de verificación con rewind)
+              Al terminar, un fork de verificación final chequea todo de punta
+              a punta: si todo pasa, marca Implemented y sincroniza el roadmap;
+              si algo no pasa, marca Implementado con observaciones sin tocar
+              el roadmap. Released queda siempre para el usuario. Siguiente
+              paso sugerido: /spec-finish
 
 /spec-impl 02-powerups  (estado: Draft / Borrador)
 
@@ -315,4 +385,4 @@ Si no todos los criterios están verificados, cerrá en cambio con los criterios
               No crea rama, no toca código
 ```
 
-**La creación de rama está controlada por el flag `AutoCreateBranch`** en `specs/.spec-config.yml`. Por defecto es `true` (crea la rama automáticamente, como se muestra arriba). Ponelo en `false` para que la Fase 3 no cree ninguna rama ni pregunte nada - trabaja directo en `main`.
+**La creación de rama está controlada por el flag `AutoCreateBranch`** en `specs/.spec-config.yml`. Por defecto es `false` (la Fase 3 no crea ninguna rama ni pregunta nada - trabaja directo en `main`). Ponelo en `true` para que cree y cambie a `spec-NN-slug` automáticamente, como se muestra arriba.

@@ -148,8 +148,8 @@ Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las 
    # configuración del flujo de spec
    #
    # AutoCreateBranch - controla si /spec-impl crea la rama de git automáticamente.
-   #   true  (default) → /spec-impl crea y cambia a spec-NN-slug sin preguntar
-   #   false           → /spec-impl pide confirmación [y/N] antes de crear la rama
+   #   false (default) → /spec-impl trabaja directo en la rama principal (main/master), sin crear rama ni preguntar
+   #   true             → /spec-impl crea y cambia a spec-NN-slug automáticamente, sin preguntar
    AutoCreateBranch: false
    ```
 
@@ -164,7 +164,7 @@ Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las 
    - Ruta del archivo creado.
    - Recordatorio: la spec está en estado `Draft`. Cambiala a `Approved` una vez que la hayas releído.
    - Si se sincronizó un roadmap, mencioná el slug vinculado. Si había un roadmap pero no una coincidencia inequívoca, aclarale que la spec quedó independiente.
-   - Si acabás de crear `specs/.spec-config.yml`, mencioná que existe y que `AutoCreateBranch` tiene por defecto `true` (poné `false` si querés controlar vos mismo la creación de ramas).
+   - Si acabás de crear `specs/.spec-config.yml`, mencioná que existe y que `AutoCreateBranch` tiene por defecto `false` (poné `true` si querés que cree la rama automáticamente).
    - Próximo paso: una vez revisada y aprobada, ejecutar `/spec-impl NN-slug` para implementarla.
    - **Parar acá.** No propongas implementar la spec, escribir código, ni tomar ninguna acción más allá de esta confirmación.
 
