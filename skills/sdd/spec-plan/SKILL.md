@@ -3,7 +3,7 @@ name: spec-plan
 description: "Planifica un proyecto o sistema grande desde cero, descomponiéndolo en una hoja de ruta de specs secuenciadas. Un nivel arriba de spec-init: en vez de una spec lista para implementar, produce visión, alcance y arquitectura de alto nivel más la lista ordenada de specs que después se van implementando de a una con spec-init + spec-impl. Úsalo al arrancar un sistema nuevo desde cero, no para features puntuales en un proyecto existente."
 disable-model-invocation: true
 argument-hint: 'descripción breve del proyecto o sistema a construir'
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Bash(ls:*), Bash(cat:*), Bash(date:*), Bash(mkdir:*), mcp__plugin_engram_engram__mem_current_project, mcp__plugin_engram_engram__mem_search, mcp__plugin_engram_engram__mem_save, mcp__plugin_engram_engram__mem_session_summary
 ---
 
 # /spec-plan — Planificador de alto nivel para proyectos nuevos
@@ -40,30 +40,27 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
 
 - **Si Engram está disponible:** vas a usarlo en la Fase 1 para traer decisiones de arquitectura o restricciones de sesiones anteriores relacionadas con este proyecto, y para guardar en la Fase 3 las decisiones de arquitectura que valga la pena recordar más allá de lo que ya queda escrito en el roadmap.
-- **Si Engram NO está disponible:** avisale al usuario en una sola línea, bloquear el flujo una unica vez y proponerle ayuda para configurarlo:
+- **Si Engram NO está disponible:** continuá normalmente. No bloquees la planificación ni conviertas su configuración en una tarea lateral. Mencioná la limitación una sola vez en la confirmación final:
 
   ```
-  ℹ️ No tenés Engram configurado en esta sesión, queres configurarlo? 
-  De lo contrario las decisiones de arquitectura de este roadmap van a quedar 
-  solo en specs/00-roadmap.md, sin memoria persistente entre sesiones. 
-  Si querés que las próximas specs de este proyecto arranquen con ese contexto, 
-  activamos el plugin engram ahora.
+  ℹ️ Engram no está disponible en esta sesión; las decisiones quedaron registradas
+  en specs/00-roadmap.md, pero no se guardaron en memoria persistente.
   ```
 
   No lo vuelvas a mencionar en el resto de la ejecución.
 
 ### Fase 1 — Entender el contexto
 
-1. Leé el archivo de memoria del proyecto, si existe. Probá en orden y detenete en el primero que encuentres: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `README.md`.
+1. Leé todos los archivos de instrucciones aplicables que existan (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`), respetando su alcance y precedencia. Después leé `README.md`, si existe, como contexto del producto — no como reemplazo de las instrucciones.
 2. Revisá el contexto de sesión de arriba. Si ya existe `specs/00-roadmap.md`, esto es una **revisión** de un roadmap existente, no una planificación desde cero — leelo completo antes de preguntar nada, y en la Fase 2 enfocate en qué cambió respecto de lo que ya está escrito.
-3. Si además de (o en vez de) un roadmap ya hay specs numeradas (`01-`, `02-`, ...), notá cuáles ítems del roadmap ya se implementaron para no volver a plantearlos como pendientes.
+3. Si además de (o en vez de) un roadmap ya hay specs numeradas (`01-`, `02-`, ...), vinculalas con los ítems por la referencia explícita del campo `Spec` o, como respaldo, por un slug inequívoco. Leé el estado dentro de cada spec: la existencia del archivo no significa que ya esté implementada.
 4. **Si Engram está disponible** (ver Fase 0): llamá `mem_search` con palabras clave del proyecto o sistema a construir para ver si hay decisiones de arquitectura o restricciones de sesiones anteriores relevantes. Si aparece algo, traelo a la Fase 2 en vez de volver a preguntarlo.
 
 Si `$ARGUMENTS` llega vacío, pedile al usuario una descripción inicial en **una o dos oraciones** de qué sistema quiere construir.
 
 ### Fase 2 — Clarificar mediante preguntas de alto nivel
 
-Esta fase clarifica el **proyecto entero**, no una feature. Preguntá en bloques de 3 a 5, esperando respuesta antes de seguir.
+Esta fase clarifica el **proyecto entero**, no una feature. Preguntá solo lo necesario, en bloques de 1 a 5 preguntas relacionadas, esperando respuesta antes de seguir. No completes un cupo fijo si el contexto ya alcanza.
 
 **Categorías de preguntas que siempre deberías considerar:**
 
@@ -78,6 +75,7 @@ Esta fase clarifica el **proyecto entero**, no una feature. Preguntá en bloques
 
 - Concretas, no abiertas. Si tu agente expone `AskUserQuestion`, usala para estos bloques en vez de prosa — con tu recomendación marcada primero.
 - Cuando algo suene a una feature completa dentro de la respuesta (ej.: "y también necesito un dashboard de analytics"), anotalo como candidato a ítem propio del roadmap, no como detalle de otro ítem.
+- Clasificá cada capacidad mencionada fuera de la v1 como una de estas tres cosas: **exclusión explícita**, **idea para una etapa futura** o **spec comprometida del roadmap**. No mezcles ideas valiosas todavía no comprometidas con cosas que se decidió no construir.
 
 **Cuándo dejar de preguntar:**
 
@@ -98,19 +96,34 @@ Parar cuando puedas responder sin asumir nada:
 Reglas de descomposición:
 
 - **Tamaño de spec, no de epic.** Cada ítem tiene que poder resolverse en una sola spec de `/spec-init` — el usuario los describió como "unas horas" de trabajo. Si un ítem se siente más grande que eso, dividilo en dos o más ítems ya en esta lista, no lo dejes grande para que `/spec-init` lo descubra después.
-- **Cada ítem deja el sistema funcional.** Igual que los pasos de una spec: nada de "medio backend sin frontend que lo use". Preferí verticales delgadas (una funcionalidad de punta a punta) por sobre capas horizontales (todo el modelo de datos primero, después todo el backend, después todo el frontend), salvo que el usuario pida explícitamente lo segundo.
-- **Dependencias explícitas.** Si el ítem 4 necesita lo que construye el ítem 2, decilo. El orden final del roadmap debe respetar esas dependencias.
+- **Resultado verificable.** Preferí verticales delgadas y demostrables (una funcionalidad de punta a punta) por sobre capas horizontales. Permití una spec habilitante de infraestructura, migración o arquitectura solo cuando sea inevitable, produzca un resultado verificable y diga qué ítems desbloquea.
+- **Identidad estable.** Cada ítem tiene un slug único. El número expresa el orden actual; las dependencias siempre se escriben con slugs, nunca con números ordinales, porque el roadmap puede reordenarse.
+- **Dependencias explícitas.** Si `billing` necesita lo que construye `organizations`, decilo como `Depende de: organizations`. El orden final del roadmap debe respetar esas dependencias.
 - **El primer ítem es el de mayor valor con menor dependencia.** Preferí arrancar por algo que, una vez implementado, ya sea demostrable.
+- **Tamaño relativo, con límite.** Usá S/M/L solo para comparar ítems de este roadmap. Incluso un ítem L debe caber en una única spec y, previsiblemente, en no más de una jornada; si no, dividilo.
+- **Estado trazable.** Cada ítem incluye `Estado` y `Spec`. Usá `Pendiente` si la spec todavía no existe, `Especificada` si existe pero no está implementada, `En progreso` solo cuando haya evidencia de implementación activa y `Hecho` únicamente cuando la spec vinculada esté en estado `Implemented` o equivalente. `Replantear` sirve para una spec vinculada que quedó `Obsolete`.
+
+**Ideas para etapas futuras:** registrá aparte las ideas valiosas que no estén comprometidas en el roadmap actual. No llevan número, tamaño ni estado de ejecución. Cada una debe indicar por qué se difiere y, cuando sea útil, qué condición justificaría reconsiderarla. Si en una revisión una idea se promueve al roadmap, sacala de esta sección.
 
 ## Fase 4 — Guardar el roadmap
 
-1. Si es la primera vez, creá `specs/00-roadmap.md` siguiendo `template.md`. Si ya existía (revisión), actualizalo: conservá el estado (`Pendiente` / `En progreso` / `Hecho`) de los ítems que no cambiaron, y marcá con claridad qué se agregó, se sacó o se reordenó.
-2. Usá la fecha del contexto de sesión de arriba. **Nunca escribas una fecha que no hayas leído de ahí.**
-3. Escribí el archivo directamente. **No pidas permiso para escribirlo** — anunciá la ruta en la confirmación final.
-4. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (el roadmap creado/revisado), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (roadmap escrito) y Relevant Files (`specs/00-roadmap.md`).
-5. Confirmale al usuario:
+1. Asegurate de que exista la carpeta `specs/`. Si es la primera vez, creá `specs/00-roadmap.md` siguiendo `template.md`.
+2. Si ya existía, actualizalo sin perder trazabilidad: conservá `Created`, actualizá `Updated`, preservá el estado y el vínculo `Spec` de los ítems que no cambiaron, y agregá una entrada breve al historial de revisiones indicando qué se agregó, eliminó o reordenó. No dejes ítems eliminados dentro del roadmap activo solo para conservar historia: el historial cumple esa función.
+3. Usá la fecha del contexto de sesión de arriba. **Nunca escribas una fecha que no hayas leído de ahí.**
+4. Escribí el archivo directamente. **No pidas permiso para escribirlo** — anunciá la ruta en la confirmación final.
+5. Releé el archivo escrito y validá antes de confirmar:
+   - todos los slugs son únicos;
+   - todas las dependencias apuntan a slugs existentes y no forman ciclos;
+   - el orden respeta las dependencias;
+   - cada ítem tiene objetivo, dependencias, tamaño, estado y vínculo `Spec`;
+   - el primer ítem pendiente no depende de otro ítem pendiente posterior;
+   - ninguna idea futura está duplicada en el roadmap comprometido;
+   - el Markdown está completo y no quedaron placeholders accidentales.
+6. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (el roadmap creado/revisado), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (roadmap escrito) y Relevant Files (`specs/00-roadmap.md`).
+7. Confirmale al usuario:
    - Ruta del archivo (`specs/00-roadmap.md`).
    - Cuántos ítems tiene el roadmap y cuál es el primero.
+   - Cuántas ideas quedaron registradas para etapas futuras, si las hay.
    - Próximo paso: ejecutar `/spec-init` con la descripción del primer ítem pendiente para empezar a dosificar el roadmap.
    - **Parar acá.** No propongas escribir la primera spec vos mismo, ni tomar ninguna acción más allá de esta confirmación.
 
@@ -120,6 +133,8 @@ Reglas de descomposición:
 - **Nunca asumir decisiones de arquitectura que el usuario no confirmó.** Si el orden del roadmap depende de una decisión abierta, preguntá en la Fase 2.
 - **Cada ítem del roadmap debe caber en una spec de `/spec-init`.** Si dudás si un ítem es demasiado grande, dividilo — es más barato dividir acá que a mitad de una spec.
 - **No dupliques el detalle de `/spec-init`.** El roadmap no lleva modelo de datos, plan de implementación paso a paso, ni criterios de aceptación — eso lo escribe cada spec individual cuando le toque.
+- **No uses números ordinales como identidad.** Los números pueden cambiar; los slugs y vínculos `Spec` mantienen la trazabilidad.
+- **No marques un ítem como `Hecho` por encontrar un archivo con nombre parecido.** Verificá el estado de la spec vinculada.
 
 ## Argumentos
 
