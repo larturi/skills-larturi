@@ -40,13 +40,14 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` — se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
 
 - **Si Engram está disponible:** vas a usarlo en la Fase 1 para traer decisiones de arquitectura o restricciones de sesiones anteriores relacionadas con este proyecto, y para guardar en la Fase 3 las decisiones de arquitectura que valga la pena recordar más allá de lo que ya queda escrito en el roadmap.
-- **Si Engram NO está disponible:** avisale al usuario en una sola línea, sin bloquear el flujo, y seguí:
+- **Si Engram NO está disponible:** avisale al usuario en una sola línea, bloquear el flujo una unica vez y proponerle ayuda para configurarlo:
 
   ```
-  ℹ️ No tenés Engram configurado en esta sesión — las decisiones de arquitectura
-  de este roadmap van a quedar solo en specs/00-roadmap.md, sin memoria
-  persistente entre sesiones. Si querés que las próximas specs de este proyecto
-  arranquen con ese contexto, activá el plugin engram.
+  ℹ️ No tenés Engram configurado en esta sesión, queres configurarlo? 
+  De lo contrario las decisiones de arquitectura de este roadmap van a quedar 
+  solo en specs/00-roadmap.md, sin memoria persistente entre sesiones. 
+  Si querés que las próximas specs de este proyecto arranquen con ese contexto, 
+  activamos el plugin engram ahora.
   ```
 
   No lo vuelvas a mencionar en el resto de la ejecución.

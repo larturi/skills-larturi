@@ -16,12 +16,12 @@ Este archivo es la referencia que consulta el skill `/spec-plan` al generar el r
 
 ---
 
-## Alcance de la v1
+## Alcance
 
 Dos sub-bloques explícitos, igual que el Alcance de una spec individual.
 
 ```markdown
-## Scope de la v1
+## Scope
 
 **In:**
 
