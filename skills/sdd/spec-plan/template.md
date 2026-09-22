@@ -9,13 +9,13 @@ Este archivo es la referencia que consulta el skill `/spec-plan` al generar el r
 ```markdown
 # Roadmap - Nombre corto del proyecto
 
-> **Status:** Planning
-> **Created:** YYYY-MM-DD
-> **Updated:** YYYY-MM-DD
-> **Vision:** Una o dos oraciones. Qué problema resuelve el sistema y para quién.
+> **Estado:** Planificando
+> **Creado:** YYYY-MM-DD
+> **Actualizado:** YYYY-MM-DD
+> **Visión:** Una o dos oraciones. Qué problema resuelve el sistema y para quién.
 ```
 
-Estados válidos del roadmap: `Planning` mientras se define, `Active` cuando ya se están ejecutando sus specs, `Paused` si se detuvo deliberadamente y `Complete` cuando todos los ítems comprometidos están hechos. El estado del roadmap es independiente del estado de cada spec.
+Estados válidos del roadmap: `Planificando` mientras se define, `Activo` cuando ya se están ejecutando sus specs (lo pone `/spec-init`), `Pausado` si se detuvo deliberadamente (manual) y `Completo` cuando todos los ítems comprometidos están hechos (lo pone `/spec-impl`). El estado del roadmap es independiente del estado de cada spec.
 
 ---
 
@@ -24,19 +24,19 @@ Estados válidos del roadmap: `Planning` mientras se define, `Active` cuando ya 
 Dos sub-bloques explícitos, igual que el Alcance de una spec individual.
 
 ```markdown
-## Scope
+## Alcance
 
-**In:**
+**Entra:**
 
 - Capacidad concreta uno.
 - Capacidad concreta dos.
 
-**Out:**
+**Fuera:**
 
 - Algo que se decidió explícitamente no construir dentro de este roadmap.
 ```
 
-`Out` contiene exclusiones, no ideas candidatas. Las capacidades valiosas diferidas van en **Ideas para etapas futuras**.
+`Fuera` contiene exclusiones, no ideas candidatas. Las capacidades valiosas diferidas van en **Ideas para etapas futuras**.
 
 ---
 
@@ -86,7 +86,7 @@ La sección central. Lista ordenada, no tabla larga con detalle de implementaci�
 - Las dependencias se expresan con slugs, nunca con números ordinales.
 - Tamaño es relativo entre ítems de este mismo roadmap: S/M/L. Incluso L debe caber en una única spec y previsiblemente en no más de una jornada; si no, se divide.
 - Estado usa `Pendiente`, `Especificada`, `En progreso`, `Hecho` o `Replantear`.
-- `Pendiente`: todavía no hay spec. `Especificada`: la spec existe pero no está implementada. `En progreso`: hay evidencia de implementación activa. `Hecho`: la spec vinculada está en `Implemented` o equivalente. `Replantear`: la spec quedó obsoleta o su alcance debe redefinirse.
+- `Pendiente`: todavía no hay spec. `Especificada`: la spec existe pero no está implementada. `En progreso`: hay evidencia de implementación activa. `Hecho`: la spec vinculada está en `Implementado` o `Publicado`. `Replantear`: la spec quedó obsoleta o su alcance debe redefinirse.
 - `Spec` contiene la ruta real una vez creada; hasta entonces dice `todavía no creada`.
 - El slug de cada ítem es una sugerencia de punto de partida para `/spec-init`, no un compromiso - puede ajustarse al escribir la spec real.
 
@@ -148,7 +148,7 @@ Cierre fijo del documento:
 ```markdown
 ## Cómo seguir
 
-Ejecutá `/spec-init` nombrando el slug exacto del próximo ítem pendiente (en orden, salvo que el usuario prefiera otro). Si el vínculo es inequívoco, `/spec-init` lo registra como `Especificada` y activa el roadmap. Cuando esa spec llegue a `Approved`, corré `/spec-impl`: al comenzar la marca `En progreso` y, después de verificar todos los criterios de aceptación, deja la spec en `Implemented` y el ítem en `Hecho`. Cuando todos los ítems comprometidos estén hechos, el roadmap pasa a `Complete`.
+Ejecutá `/spec-init` nombrando el slug exacto del próximo ítem pendiente (en orden, salvo que el usuario prefiera otro). Si el vínculo es inequívoco, `/spec-init` lo registra como `Especificada` y activa el roadmap. Cuando esa spec esté en `Aprobado`, corré `/spec-impl`: al comenzar marca el ítem `En progreso` y, cuando la spec queda `Implementado`, lo pasa a `Hecho`. Cuando todos los ítems comprometidos están hechos, el roadmap pasa a `Completo`.
 ```
 
 ---

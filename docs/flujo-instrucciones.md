@@ -30,8 +30,8 @@ son estas dos:
 
 ### 1. `sdd` — spec-driven development
 
-- Vive en este mismo repo: [`skills/sdd`](/skills/sdd/), grupo de 4 skills
-  (`spec-plan` opcional → `spec-init` punto de entrada → `spec-impl` → `spec-pre-commit`).
+- Vive en este mismo repo: [`skills/sdd`](/skills/sdd/), grupo de 5 skills
+  (`spec-plan` opcional → `spec-init` punto de entrada → `spec-impl` → `spec-finish`, que usa `spec-pre-commit` como gate).
 - Se instala por proveedor:
   - Claude y opencode: symlink vía `~/.agents/skills` (fuente única) hacia
     `~/.claude/skills` y `~/.config/opencode/skills` respectivamente.
@@ -115,13 +115,14 @@ Al recibir un pedido de código, evaluar primero el alcance antes de implementar
   contratos compartidos o APIs públicas, o el alcance no está claro / hay varias
   formas razonables de resolverlo): no implementar de una. Pausar y usar el flujo
   spec-driven (SDD) propio antes de escribir código: el grupo de skills `sdd`
-  (`/spec-plan` → `/spec-init` → `/spec-impl` → `/spec-pre-commit`, ver
+  (`/spec-plan` → `/spec-init` → `/spec-impl` → `/spec-finish`, ver
   `/Users/larturi/Desktop/Dev/Personal/skills-larturi/skills/sdd/README.md`).
   - Punto de entrada habitual: `/spec-init <slug>` para diseñar la spec sección por
-    sección (queda en `specs/NN-slug.md` con estado `Draft`); tras aprobarla,
-    `/spec-impl NN-slug` para implementarla paso a paso.
+    sección (queda en `specs/NN-slug.md` con estado `Borrador`); tras aprobarla
+    a mano, `/spec-impl NN-slug` para implementarla y `/spec-finish NN-slug` para
+    auditar y dejar el commit listo.
   - `/spec-plan` es opcional, solo para sistemas nuevos desde cero que no entran en
-    una sola spec. `/spec-pre-commit` audita los cambios staged antes de commitear.
+    una sola spec. `/spec-pre-commit` también se puede usar sola sobre cualquier commit.
   - Si el proyecto ya usa este mismo flujo (carpeta `specs/`, `specs/00-roadmap.md`),
     seguir su convención tal cual está — es el mismo flujo, no uno distinto.
   - Si el skill `sdd` no está disponible en la herramienta/sesión actual, proponer

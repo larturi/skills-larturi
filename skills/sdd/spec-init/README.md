@@ -12,14 +12,14 @@ Diseña el documento de una feature haciendo preguntas de clarificación, siguie
 
 1. **Contexto** - lee `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` / `README.md`, las specs previas y, si existe, el roadmap activo.
 2. **Preguntas** - clarifica alcance, datos, integración, persistencia y riesgos en bloques de 3-5 preguntas.
-3. **Escritura** - genera el spec completo (o sección por sección, si falta información).
-4. **Guardado** - escribe `specs/NN-slug.md` con estado `Draft` y, si corresponde inequívocamente a un ítem del roadmap activo, lo vincula como `Especificada`.
+3. **Escritura** - genera una spec breve (una línea por idea), completa o sección por sección si falta información.
+4. **Guardado** - escribe `specs/NN-slug.md` con estado `Borrador` y, si corresponde inequívocamente a un ítem del roadmap activo, lo vincula como `Especificada`.
 
 ## Salida
 
-Un spec con: objetivo en una frase, alcance (qué entra / qué no), modelo de datos, plan de implementación paso a paso, criterios de aceptación verificables, y decisiones tomadas/descartadas.
+Una spec corta (orientativo: 60-80 líneas) con: objetivo en una oración, alcance (entra / fuera), modelo de datos si aplica, plan de una línea por paso, criterios de aceptación booleanos y decisiones con su razón.
 
-El estado arranca en `Draft`. Cambiarlo a `Approved` es un paso manual del humano - de ahí lo toma [`/spec-impl`](../spec-impl/).
+El estado arranca en `Borrador`. Cambiarlo a `Aprobado` es un paso manual - de ahí lo toma [`/spec-impl`](../spec-impl/).
 
 El roadmap es opcional. Si no existe, está completo o la feature no coincide inequívocamente con un ítem comprometido, la spec se crea de forma independiente y el roadmap no se modifica.
 

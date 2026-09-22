@@ -1,26 +1,29 @@
 # /spec-impl
 
-Implementa una spec aprobada, paso a paso, con pausas para revisar cada diff.
+Implementa una spec aprobada de punta a punta y la verifica contra sus criterios de aceptación.
 
 ## Uso
 
 ```bash
-/spec-impl 03-niveles-y-highscores
+/spec-impl 03-niveles-y-highscores   # o solo 03, o solo el slug
 ```
 
 ## Qué hace
 
-1. **Identifica** el archivo en `specs/` (por nombre completo, número o slug).
-2. **Valida** que el estado signifique `Approved` (en cualquier idioma) - si no, se detiene sin tocar código.
-3. **Crea la rama** `spec-NN-slug` y se mueve a ella. Controlado por `AutoCreateBranch` en `specs/.spec-config.yml` (default `true`).
-4. **Implementa** un paso del plan a la vez, mostrando el diff y esperando confirmación antes de seguir.
-5. **Cierra** la spec como `Implemented` después de verificar todos los criterios de aceptación y sincroniza un ítem de roadmap solamente si ya estaba vinculado de forma exacta.
+1. **Valida el estado:** `Aprobado` → implementa; `Implementado con observaciones` → retoma; cualquier otro → se detiene sin tocar nada.
+2. **Rama:** por defecto trabaja en la rama principal (si estás en otra, pregunta). Con `AutoCreateBranch: true` en `specs/.spec-config.yml` usa `spec-NN-slug`.
+3. **Confirma una sola vez** cómo va a correr, y después implementa todos los pasos seguidos, un fork por paso. Solo para ante una ambigüedad o un fallo que no cede.
+4. **Verifica** todos los criterios de aceptación al final.
+5. **Cierra:** `Implementado` si todo pasa; si no, `Implementado con observaciones` con los pendientes en `## Observaciones`.
+
+Al volver a correrla sobre una spec con observaciones, ofrece **resolverlas** (corrige y re-verifica) u **omitirlas** (quedan como `[aceptada]` y la spec pasa a `Implementado`).
 
 ## Reglas clave
 
-- Nunca commitea automáticamente - eso lo decide el humano.
-- Si encuentra una ambigüedad que la spec no resuelve, para y pregunta.
-- No exige roadmap: los planes completos, pausados o sin vínculo exacto quedan intactos.
-- El historial del roadmap se reserva para cambios estructurales; las transiciones `En progreso` y `Hecho` no agregan entradas.
+- Nunca commitea.
+- Nunca toca la Base de Datos.
+- Nunca escribe `Publicado`: es manual.
+- En la spec solo toca el estado y `## Observaciones`.
+- Roadmap opcional: solo sincroniza un ítem vinculado por ruta exacta (`En progreso` → `Hecho`).
 
-Requiere una spec generada por [`/spec-init`](../spec-init/) con estado `Approved`.
+Siguiente paso cuando queda `Implementado`: [`/spec-finish`](../spec-finish/).

@@ -24,4 +24,4 @@ Planifica un proyecto o sistema desde cero: visión, alcance de la v1, arquitect
 
 Un roadmap con: visión en una o dos oraciones, alcance in/out de la v1, arquitectura de alto nivel, lista ordenada de specs candidatas, ideas no comprometidas para etapas futuras e historial de revisiones. Cada ítem comprometido incluye objetivo, dependencias por slug, tamaño relativo, estado y vínculo a su spec cuando exista.
 
-Cada ítem del roadmap se convierte después en su propia spec vía [`/spec-init`](../spec-init/), se implementa con [`/spec-impl`](../spec-impl/), y su estado se actualiza a `Hecho` en el roadmap.
+Cada ítem del roadmap se convierte después en su propia spec vía [`/spec-init`](../spec-init/), se implementa con [`/spec-impl`](../spec-impl/). Los estados del ítem los actualizan esas skills: `/spec-init` lo pasa a `Especificada` y `/spec-impl` a `En progreso` y luego a `Hecho`.

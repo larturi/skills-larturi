@@ -40,11 +40,11 @@ Leé `template.md` (en el mismo directorio que este skill) para ver la estructur
 Antes de entender el contexto, fijate si en esta sesión tenés disponible el protocolo de Engram (herramientas `mem_search`, `mem_save`, `mem_session_summary` - se anuncian como "core tools" al arrancar la sesión cuando el plugin está activo).
 
 - **Si Engram está disponible:** vas a usarlo en la Fase 1 para traer decisiones de arquitectura o restricciones de sesiones anteriores relacionadas con este proyecto, y para guardar en la Fase 3 las decisiones de arquitectura que valga la pena recordar más allá de lo que ya queda escrito en el roadmap.
-- **Si Engram NO está disponible:** continuá normalmente. No bloquees la planificación ni conviertas su configuración en una tarea lateral. Mencioná la limitación una sola vez en la confirmación final:
+- **Si Engram NO está disponible:** avisá una sola vez, sin bloquear, y seguí:
 
   ```
-  ℹ️ Engram no está disponible en esta sesión; las decisiones quedaron registradas
-  en specs/00-roadmap.md, pero no se guardaron en memoria persistente.
+  ℹ️ Engram no está disponible en esta sesión: las decisiones van a quedar
+  solo en specs/00-roadmap.md, sin memoria persistente.
   ```
 
   No lo vuelvas a mencionar en el resto de la ejecución.
@@ -101,14 +101,14 @@ Reglas de descomposición:
 - **Dependencias explícitas.** Si `billing` necesita lo que construye `organizations`, decilo como `Depende de: organizations`. El orden final del roadmap debe respetar esas dependencias.
 - **El primer ítem es el de mayor valor con menor dependencia.** Preferí arrancar por algo que, una vez implementado, ya sea demostrable.
 - **Tamaño relativo, con límite.** Usá S/M/L solo para comparar ítems de este roadmap. Incluso un ítem L debe caber en una única spec y, previsiblemente, en no más de una jornada; si no, dividilo.
-- **Estado trazable.** Cada ítem incluye `Estado` y `Spec`. Usá `Pendiente` si la spec todavía no existe, `Especificada` si existe pero no está implementada, `En progreso` solo cuando haya evidencia de implementación activa y `Hecho` únicamente cuando la spec vinculada esté en estado `Implemented` o equivalente. `Replantear` sirve para una spec vinculada que quedó `Obsolete`.
+- **Estado trazable.** Cada ítem incluye `Estado` y `Spec`. Usá `Pendiente` si la spec todavía no existe, `Especificada` si existe pero no está implementada, `En progreso` solo cuando haya evidencia de implementación activa y `Hecho` únicamente cuando la spec vinculada esté en `Implementado` o `Publicado`. `Replantear` sirve para una spec vinculada que quedó `Obsoleto`.
 
 **Ideas para etapas futuras:** registrá aparte las ideas valiosas que no estén comprometidas en el roadmap actual. No llevan número, tamaño ni estado de ejecución. Cada una debe indicar por qué se difiere y, cuando sea útil, qué condición justificaría reconsiderarla. Si en una revisión una idea se promueve al roadmap, sacala de esta sección.
 
-## Fase 4 - Guardar el roadmap
+### Fase 4 - Guardar el roadmap
 
 1. Asegurate de que exista la carpeta `specs/`. Si es la primera vez, creá `specs/00-roadmap.md` siguiendo `template.md`.
-2. Si ya existía, actualizalo sin perder trazabilidad: conservá `Created`, actualizá `Updated`, preservá el estado y el vínculo `Spec` de los ítems que no cambiaron, y agregá una entrada breve al historial de revisiones indicando qué se agregó, eliminó o reordenó. No dejes ítems eliminados dentro del roadmap activo solo para conservar historia: el historial cumple esa función.
+2. Si ya existía, actualizalo sin perder trazabilidad: conservá `Creado`, actualizá `Actualizado`, preservá el estado y el vínculo `Spec` de los ítems que no cambiaron, y agregá una entrada breve al historial de revisiones indicando qué se agregó, eliminó o reordenó. No dejes ítems eliminados dentro del roadmap activo solo para conservar historia: el historial cumple esa función.
 3. Usá la fecha del contexto de sesión de arriba. **Nunca escribas una fecha que no hayas leído de ahí.**
 4. Escribí el archivo directamente. **No pidas permiso para escribirlo** - anunciá la ruta en la confirmación final.
 5. Releé el archivo escrito y validá antes de confirmar:

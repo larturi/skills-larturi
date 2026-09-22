@@ -1,184 +1,92 @@
-# Plantilla para una spec útil
+# Plantilla de spec
 
-Este archivo es la referencia que consulta el skill `/spec-init` al generar specs. Cada sección incluye su propósito y un ejemplo mínimo. **No es texto para copiar textualmente** - es la forma que el skill debe respetar.
+Referencia de `/spec-init`. Es la forma a respetar, no texto para copiar.
+
+**Prioridad: que la spec se relea en un par de minutos.** Una línea por idea, sin prosa, sin repetir. Orientativo: 60-80 líneas. Si no entra, la feature es demasiado grande: dividirla.
 
 ---
 
-## Encabezado
-
-Toda spec arranca con metadata en formato blockquote (sin tablas, sin bloques, simple como se muestra abajo):
+## Estructura
 
 ```markdown
-# SPEC NN - Título corto y descriptivo
+# SPEC NN - Título corto
 
-> **Status:** Draft
-> **Depends on:** SPEC 01, SPEC 02
-> **Date:** YYYY-MM-DD
-> **Objective:** Una sola oración. Si necesitás dos oraciones, la feature es demasiado grande.
-```
+> **Estado:** Borrador
+> **Depende de:** SPEC 01, SPEC 02
+> **Fecha:** YYYY-MM-DD
+> **Objetivo:** Una sola oración.
 
-**Estados válidos:** `Draft`, `In review`, `Approved`, `Implemented`, `Implementado con observaciones`, `Released`, `Obsolete`.
+## Alcance
 
-> Las etiquetas de arriba son los defaults en inglés, salvo `Implementado con observaciones` y `Released` que ya están en español porque los escribe siempre este mismo harness. Los skills también aceptan equivalentes en cualquier idioma (ej. en español: `Borrador` / `En revisión` / `Aprobado` / `Implementado` / `Obsoleto`). Elegí un set por repo y mantené consistencia.
->
-> `Implementado con observaciones` lo escribe `spec-impl` cuando su verificación final encuentra algún criterio de aceptación que no pasa. `Released` siempre es una edición manual del usuario (típicamente después de un deploy) - ninguna skill lo escribe.
-
-**Regla del objetivo:** una oración que una persona lea en 5 segundos y entienda qué se va a construir. Si no entra en una oración, dividí la feature.
-
----
-
-## Sección 1 - Por qué existe esta spec (opcional)
-
-Para specs que toman decisiones no obvias o rompen patrones del proyecto, una sección breve explicando el **por qué** del trabajo. No el qué - el qué viene después.
-
-Para specs simples, omitirla.
-
----
-
-## Sección 2 - Alcance
-
-Dos sub-bloques explícitos. **Ambos son obligatorios.**
-
-```markdown
-## Scope
-
-**In:**
+**Entra:**
 
 - Cosa concreta uno.
-- Cosa concreta dos.
 
-**Out of scope (for future specs):**
+**Fuera:**
 
-- Algo que se podría hacer pero no ahora.
-- Algo que surgió en la conversación pero no está incluido.
-```
+- Algo mencionado que se difiere a otra spec.
 
-**Por qué importa el "out":** captura las cosas que el usuario mencionó durante la fase de preguntas pero que se decidió diferir. Sin ese registro, durante la implementación va a haber tentación de meterlas de contrabando "ya que estamos".
-
----
-
-## Sección 3 - Modelo de datos
-
-Las estructuras concretas que aparecen o cambian. Usá código real, no pseudocódigo abstracto.
-
-```markdown
-## Data model
+## Modelo de datos
 
 \`\`\`js
-// Estado del juego
-const state = {
-level: 1,
-score: 0,
-highScores: [/* { score, level, date } */],
-};
+const state = { level: 1, score: 0, highScores: [] }; // highScores: { score, level, date }
 \`\`\`
 
-Convenciones:
+## Plan
 
-- Coordenadas: origen arriba a la izquierda.
-- Velocidades en píxeles/frame.
-```
+1. Crear `src/levels.js` con el esqueleto. Prueba: el juego carga igual que antes.
+2. Implementar `nextLevel()`. Prueba: al romper el último ladrillo sube a nivel 2.
 
-Si la feature no introduce datos nuevos, escribilo explícitamente: _"Esta feature no introduce estructuras de datos nuevas. Reutiliza el modelo de SPEC 01."_
+## Criterios de aceptación
 
----
-
-## Sección 4 - Plan de implementación
-
-Pasos numerados. Cada paso debe dejar el sistema en un estado **funcional y ejecutable**. Nada de "implementar la mitad y seguir mañana".
-
-```markdown
-## Implementation plan
-
-1. Crear archivo X con un esqueleto vacío.
-2. Implementar función A en X. Test manual: correr Y, ver Z.
-3. Conectar X con el módulo existente W.
-4. ...
-```
-
-**Reglas:**
-
-- Cada paso debe poder commitearse por sí solo.
-- Si un paso requiere más de 30–50 líneas de código, dividilo.
-- El último paso del plan **no** es "testear todo" - eso son los criterios de aceptación.
-
----
-
-## Sección 5 - Criterios de aceptación
-
-Checklist booleano. Cada ítem se puede verificar con sí o no.
-
-```markdown
-## Acceptance criteria
-
-- [ ] El juego carga sin errores en la consola.
 - [ ] Romper un ladrillo suma exactamente 10 puntos.
 - [ ] Recargar la página preserva los high-scores.
+
+## Decisiones
+
+- Sí: localStorage - entra en <5MB y no hay queries.
+- No: IndexedDB - overengineering para este caso.
+
+## Riesgos
+
+- localStorage deshabilitado en modo privado → fallback en memoria.
 ```
 
-**Anti-patrones a evitar:**
+## Reglas por sección
 
-- ❌ "Que funcione bien." → no verificable.
-- ❌ "Buena UX." → subjetivo.
-- ❌ "Sin bugs." → no operacionalizable.
-- ✅ "Presionar Esc pausa el juego y muestra el menú." → verificable, booleano.
+| Sección | Obligatoria | Regla |
+|---------|-------------|-------|
+| Encabezado | Sí | Objetivo en una oración. `Depende de` se omite si no hay dependencias. |
+| Alcance | Sí | Bullets de una línea. `Fuera` es explícito: evita meter cosas "ya que estamos". |
+| Modelo de datos | No | Solo si hay estructuras nuevas o cambiadas. Código real, corto. Si no aplica, se omite sin comentario. |
+| Plan | Sí | Una línea por paso: qué se hace + cómo se prueba. Cada paso deja el sistema funcional. Si un paso pasa de ~50 líneas de código, dividirlo. El último paso no es "testear todo". |
+| Criterios de aceptación | Sí | Una línea booleana cada uno. Nada de "funciona bien", "buena UX", "sin bugs". |
+| Decisiones | Sí | `Sí:` / `No:` + razón en una línea. Es la sección con más valor a futuro. |
+| Riesgos | No | Solo riesgos no obvios, `riesgo → mitigación` en una línea. |
+| Observaciones | No | La escribe solo `/spec-impl`. Ver abajo. |
 
----
+## Estados
 
-## Sección 6 - Decisiones tomadas y descartadas
+`Borrador`, `Aprobado`, `Implementado con observaciones`, `Implementado`, `Publicado`, `Obsoleto`. Quién escribe cada uno: ver el README del grupo `sdd`.
 
-La sección con más valor dentro de 3 meses. Capturá **qué consideraste**, no solo qué elegiste.
+Al leer se aceptan equivalentes en otros idiomas (`Draft`, `Approved`, `Implemented`, ...). Si el repo ya usa otro idioma en sus specs, mantener el de las specs existentes.
+
+## Observaciones (solo `/spec-impl`)
+
+Cuando la verificación final no pasa del todo, `/spec-impl` agrega al final:
 
 ```markdown
-## Decisions
+## Observaciones
 
-- **Yes:** localStorage para persistencia. Entra en <5MB y no necesitamos queries.
-- **No:** IndexedDB. Overengineering para este caso.
-- **Yes:** key versionada (`save:v1`). Permite migrar el esquema después sin romper nada.
-- **No:** sync en la nube. Va en otra spec si algún día se hace.
+- [pendiente] Recargar la página preserva los high-scores - falla: la key no se lee al iniciar.
+- [aceptada] El menú se ve bien en mobile - no verificable, el usuario lo acepta así.
 ```
 
-Cada decisión idealmente tiene una razón breve. Las decisiones sin razón son las primeras que se van a cuestionar después.
+`[pendiente]`: falló o falta confirmar. `[aceptada]`: el usuario decidió cerrarlo así. Una línea cada una, sin logs.
 
----
+## Reglas globales
 
-## Sección 7 - Riesgos identificados (opcional)
-
-Solo cuando hay riesgos no obvios. Tabla simple:
-
-```markdown
-## Risks
-
-| Riesgo                                    | Mitigación                                                                       |
-| ------------------------------------------ | --------------------------------------------------------------------------------- |
-| localStorage deshabilitado en modo privado | Fallback a objeto en memoria. El juego sigue funcionando, solo que no persiste.  |
-| Esquema incompatible a futuro              | La key incluye `:v1`. Migración documentada en `persistence.js`.                 |
-```
-
-Para specs chicas o features muy acotadas, omitirla.
-
----
-
-## Sección final - Qué NO está incluido (refuerzo)
-
-Repetir explícitamente al final qué **no** se va a hacer en esta spec. Esta repetición es deliberada - la sección de Alcance ya lo dice, pero al final del documento sirve como recordatorio cuando alguien lee solo las últimas líneas.
-
-```markdown
-## What is **not** in this spec
-
-- Editor visual (otra spec si algún día se hace).
-- Multiplayer.
-- Versión mobile.
-
-Cada una de esas, si se hace, va en su propia spec.
-```
-
----
-
-## Reglas globales sobre todo el documento
-
-- **Una oración por idea.** Si una oración tiene dos comas y un punto y coma, dividila.
-- **Nombres concretos.** Si decís "el módulo de niveles", decí `src/levels.js`. Si decís "una key", dá el string exacto.
-- **Sin TODOs.** Un TODO en una spec significa que la decisión no se tomó. Tomala o anotala como decisión pendiente con una razón.
-- **Sin código largo ejecutable.** La spec describe; el código se escribe después. Snippets cortos para ilustrar estructuras de datos están bien; funciones completas no.
-- **Markdown estándar.** Sin extensiones raras. Debe renderizar en GitHub sin sorpresas.
+- Nombres concretos: `src/levels.js`, no "el módulo de niveles".
+- Sin TODOs: una decisión se toma o se registra como pendiente con su razón.
+- Sin código ejecutable largo: la spec describe, el código viene después.
+- Markdown estándar que renderice en GitHub.
