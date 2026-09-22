@@ -1,6 +1,6 @@
 ---
 name: spec-pre-commit
-description: Auditoría de cambios staged antes de commitear, con metodología 4R (Risk, Readability, Reliability, Resilience) más chequeos de higiene de commit. Usar cuando se pida auditar, revisar o validar cambios antes de un commit. Es la única skill del grupo sdd auto-invocable a propósito: sirve también fuera del flujo.
+description: Auditoría de cambios staged antes de commitear, con metodología 4R (Risk, Readability, Reliability, Resilience) más chequeos de higiene de commit. Usar cuando se pida auditar, revisar o validar cambios antes de un commit. Es la única skill del grupo sdd auto-invocable a propósito, porque sirve también fuera del flujo.
 ---
 
 # Pre-Commit Audit
