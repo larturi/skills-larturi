@@ -50,7 +50,7 @@ stateDiagram-v2
 | `Publicado` | humano | En producción. Ninguna skill lo escribe. |
 | `Obsoleto` | humano | Ya no aplica. Desde cualquier estado. |
 
-Al leer, las skills aceptan equivalentes en otros idiomas (`Draft`, `Approved`, `Implemented`, `Released`, `Obsolete`, ...). Al escribir, usan siempre el set en español de arriba.
+Al leer, las skills aceptan equivalentes en otros idiomas (`Draft`, `Approved`, `Implemented`, `Released`, `Obsolete`, ...). Al escribir, usan el set en español de arriba, salvo que las specs existentes del repo usen otro idioma: en ese caso mantienen el de ellas.
 
 ## Estados del roadmap
 

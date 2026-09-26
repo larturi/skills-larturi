@@ -33,7 +33,7 @@ Aplicá las instrucciones del skill de descubrimiento correspondiente al tipo de
 - `discover-external-services-ecommerce`
 - `discover-external-services-landings`
 
-**Si el skill de descubrimiento necesario no está instalado en este repositorio, advertí al usuario que debe instalarlo y detené el flujo hasta que esté disponible.** No intentes adivinar la estructura por tu cuenta.
+**Si el skill de descubrimiento necesario no está disponible en esta sesión, advertí al usuario que debe instalarlo y detené el flujo hasta que esté disponible.** No intentes adivinar la estructura por tu cuenta.
 
 El skill de descubrimiento te dará:
 - Los servicios externos que consume el repo (proveedor y operación).

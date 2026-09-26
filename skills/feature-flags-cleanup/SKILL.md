@@ -100,7 +100,7 @@ Eliminar la feature flag `NOMBRE_DE_LA_FLAG` del codebase, consolidando el compo
 **Criterios de aceptacion:**
 
 - [ ] No quedan referencias a `NOMBRE_DE_LA_FLAG` en el codebase
-- [ ] Los tests pasan sin modificaciones adicionales
+- [ ] Los tests pasan (solo se actualizan los que mockean o evalúan la flag)
 - [ ] El comportamiento de la aplicacion no cambia (la flag ya estaba [activada/desactivada])
 - [ ] Se removio de la documentacion interna si aplica
 
