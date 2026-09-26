@@ -133,7 +133,7 @@ Avisale al usuario en una línea que estás auditando y terminá el turno - no i
 
 Cuando llegue el reporte del fork, mostrale al usuario el resultado completo (hallazgos + veredicto).
 
-- **Si el veredicto es `NO COMMITEAR`:** parar ahí. No avances a la Fase 5. Mostrale los hallazgos críticos y preguntale cómo seguir (podés usar `AskUserQuestion`): arreglar ahora (podés lanzar un fork de corrección dirigido a esos hallazgos, mismo patrón que el rewind de `spec-impl`) o corregir a mano y volver a correr `/spec-finish` después.
+- **Si el veredicto es `NO COMMITEAR`:** parar ahí. No avances a la Fase 5. Mostrale los hallazgos críticos y preguntale cómo seguir (podés usar `AskUserQuestion`): arreglar ahora (podés lanzar un fork de corrección dirigido a esos hallazgos, mismo patrón que el reintento de un paso en `spec-impl`) o corregir a mano y volver a correr `/spec-finish` después.
 - **Si el veredicto es `LISTO PARA COMMIT` o `COMMIT CON CAMBIOS MENORES`:** seguí a la Fase 5. Si hubo advertencias o sugerencias menores, mencionáselas al usuario de todos modos antes de continuar.
 
 ---
@@ -173,7 +173,7 @@ Mostrale al usuario el mensaje de commit propuesto, formateado y listo para usar
 - **Con rama:** el diff ya está staged; revisarlo con `git diff --staged` y commitear.
 - **Sin rama:** agregar los archivos de la spec con `git add <archivos>` (dale la lista exacta), revisar con `git diff --staged` y commitear.
 - Si fue el camino con rama, una vez que commitee puede borrar la rama con `git branch -d spec-NN-slug` a mano - no se lo preguntes ahora ni lo hagas vos, mencionalo solo como paso posterior disponible.
-- El pase de la spec a `Publicado` sigue siendo una decisión manual y posterior (por ejemplo, después de un deploy) - esta skill no toca el campo `Status`.
+- El pase de la spec a `Publicado` sigue siendo una decisión manual y posterior (por ejemplo, después de un deploy) - esta skill no toca el campo `Estado`.
 
 **Si Engram está disponible** (ver Fase 0): antes del mensaje final, llamá `mem_session_summary` con Goal (cierre de la spec `NN-slug`), Discoveries (resultado de la auditoría), Accomplished (diff preparado para commit), Next Steps (commit manual del usuario, y borrado de rama si aplica) y Relevant Files (la spec y los archivos del diff).
 
@@ -192,6 +192,6 @@ Revisá con git diff --staged y commiteá vos con el mensaje de arriba.
 
 - **Nunca ejecutar `git commit`** bajo ninguna circunstancia, en ningún camino.
 - **Nunca borrar la rama automáticamente.** Solo mencionarlo como paso manual posterior al commit.
-- **Nunca modificar el campo `Status` de la spec.** Ni siquiera marcarla como `Publicado` - eso es siempre una edición manual del usuario, ajena a esta skill.
+- **Nunca modificar el campo `Estado` de la spec.** Ni siquiera marcarla como `Publicado` - eso es siempre una edición manual del usuario, ajena a esta skill.
 - **Nunca avanzar con un veredicto `NO COMMITEAR`.** El bloqueo es intencional, igual que la validación de estado de la Fase 2.
 - **Puntuación:** nunca uses el carácter de guion largo. Usá siempre `-`.

@@ -46,10 +46,10 @@ Si la skill participa de un flujo con otras, dejá escrito **con cuál continúa
 
 ## Probarla antes de integrar
 
-Instalala en Kiro sobre un repo real desde tu copia local, y recién después integrá a `master`:
+Instalala en Kiro sobre un repo real desde tu copia local, y recién después integrá a `main`:
 
 ```bash
-npx skills add /ruta/a/qa-skills -a kiro-cli -s <nombre>
+npx skills add /ruta/a/skills-larturi -a kiro-cli -s <nombre>
 ```
 
 Verificá que el agente la active sola a partir de la `description`, sin que tengas que nombrarla.

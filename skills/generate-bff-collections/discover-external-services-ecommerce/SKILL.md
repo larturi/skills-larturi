@@ -57,13 +57,11 @@ Preguntá al usuario para cuál de ellos quiere que se genere la colección de P
 
 Usá como referencia las siguientes fuentes (en orden de prioridad):
 
-3. **Funciones `*RequestBodyFor` y `*RequestHeadersFor`** en el archivo del servicio (ej: `mulesoft/Payments.go`)
-2. **Cassettes de go-vcr**: Archivos en `api/test/fixtures/.http-services/` que contienen requests y responses reales grabados contra UAT. Buscar cassettes que contengan la URL del endpoint. Verificar la fecha de última actualización con `git log -1 --format="%ai" -- <archivo>` para priorizar los más recientes.
-3. **Tests unitarios** en `*_test.go` que validan la construcción de requests y el parseo de responses
+1. **Cassettes de go-vcr**: Archivos en `api/test/fixtures/.http-services/` que contienen requests y responses reales grabados contra UAT. Buscar cassettes que contengan la URL del endpoint. Verificar la fecha de última actualización con `git log -1 --format="%ai" -- <archivo>` para priorizar los más recientes.
+2. **Funciones `*RequestBodyFor` y `*RequestHeadersFor`** en el archivo del servicio (ej: `mulesoft/Payments.go`)
+3. **Tests unitarios** en `*_test.go` que validan la construcción de requests y el parseo de responses. Usan datos inventados para validar lógica interna: no están garantizados en UAT.
 4. **Mock HTTP centralizado** en `api/test/mock/http_mock.go`
 5. **Manejo de status codes** en los `switch response.StatusCode` del código de producción
-
-**⚠️ IMPORTANTE:** Los cassettes de go-vcr son la fuente preferida de datos reales. Los tests unitarios usan datos inventados para validar lógica interna y NO están garantizados en UAT.
 
 ## Continuación
 

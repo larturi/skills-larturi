@@ -23,7 +23,7 @@ Depende de qué necesitás:
 
 | Necesidad | Skills a instalar |
 |-----------|-------------------|
-| Documentar un BFF NestJS completo | `generate-bff-collection` (standalone, no necesita las otras) |
+| Documentar un BFF NestJS completo | `generate-bff-collection` + `discover-external-services-ag` + `generate-external-tests` (reutiliza su descubrimiento de providers y sus reglas de variables y auth) |
 | Probar un servicio externo puntual (microservicio de autogestión) | `generate-external-tests` + `discover-external-services-ag` |
 | Probar un servicio externo puntual (monorepo de ecommerce) | `generate-external-tests` + `discover-external-services-ecommerce` |
 | Probar un servicio externo puntual (landing) | `generate-external-tests` + `discover-external-services-landings` |

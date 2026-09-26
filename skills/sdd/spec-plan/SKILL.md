@@ -95,7 +95,7 @@ Parar cuando puedas responder sin asumir nada:
 
 Reglas de descomposición:
 
-- **Tamaño de spec, no de epic.** Cada ítem tiene que poder resolverse en una sola spec de `/spec-init` - el usuario los describió como "unas horas" de trabajo. Si un ítem se siente más grande que eso, dividilo en dos o más ítems ya en esta lista, no lo dejes grande para que `/spec-init` lo descubra después.
+- **Tamaño de spec, no de epic.** Cada ítem tiene que poder resolverse en una sola spec de `/spec-init`, del orden de unas horas de trabajo. Si un ítem se siente más grande que eso, dividilo en dos o más ítems ya en esta lista, no lo dejes grande para que `/spec-init` lo descubra después.
 - **Resultado verificable.** Preferí verticales delgadas y demostrables (una funcionalidad de punta a punta) por sobre capas horizontales. Permití una spec habilitante de infraestructura, migración o arquitectura solo cuando sea inevitable, produzca un resultado verificable y diga qué ítems desbloquea.
 - **Identidad estable.** Cada ítem tiene un slug único. El número expresa el orden actual; las dependencias siempre se escriben con slugs, nunca con números ordinales, porque el roadmap puede reordenarse.
 - **Dependencias explícitas.** Si `billing` necesita lo que construye `organizations`, decilo como `Depende de: organizations`. El orden final del roadmap debe respetar esas dependencias.

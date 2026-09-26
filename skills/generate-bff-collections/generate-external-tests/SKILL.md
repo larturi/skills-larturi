@@ -186,7 +186,7 @@ Creá un environment específico para cada proveedor, donde se definan exclusiva
 
 **Convención de nombres:**
 ```
-archivo: <proveedor>_secrets.json
+archivo: <proveedor>-secrets.json
 descripción: Secrets de <proveedor>
 ```
 

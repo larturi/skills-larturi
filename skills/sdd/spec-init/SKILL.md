@@ -149,7 +149,7 @@ Cuando el contenido esté listo (ya sea porque tenías todo, o porque todas las 
 8. **Sincronizá el roadmap solo si identificaste un ítem inequívoco en la Fase 1.** En `specs/00-roadmap.md`:
    - reemplazá `Estado: Pendiente` por `Estado: Especificada` en ese ítem;
    - reemplazá `Spec: todavía no creada` por la ruta real de la spec;
-   - actualizá `Updated` con la fecha del contexto;
+   - actualizá `Actualizado` con la fecha del contexto;
    - si estaba `Planificando`, cambialo a `Activo`.
    No agregues una entrada al historial: crear y vincular una spec es progreso normal, no una revisión estructural. No modifiques otros ítems ni sincronices por nombre aproximado.
 9. **Si Engram está disponible** (ver Fase 0): antes de confirmar, llamá `mem_session_summary` con Goal (la spec creada), Discoveries (lo guardado con `mem_save` en la Fase 3), Accomplished (spec escrita y guardada) y Relevant Files (la ruta del `.md`).
