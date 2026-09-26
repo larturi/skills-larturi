@@ -61,6 +61,7 @@ Si instalaste con symlink (metodo default), un solo `update` refresca todos tus 
 ```
 skills-larturi/
 ├── README.md
+├── AGENTS.md
 ├── docs/
 │   └── flujo-instrucciones.md
 ├── skills/
@@ -83,6 +84,16 @@ skills-larturi/
 3. Abre un PR para revision del equipo
 
 Consulta [CONTRIBUTING.md](./CONTRIBUTING.md) para mas detalles.
+
+## Auditoria de prompts
+
+Despues de crear o modificar skills, y en cada release de un modelo nuevo, correr en Claude Code:
+
+```bash
+/claude-api prompt-audit
+```
+
+Detecta instrucciones desactualizadas: referencias a campos, rutas o pasos que ya no existen, reglas que se contradicen entre skills y patrones escritos para modelos anteriores. Propone un diff; no aplica nada sin confirmacion.
 
 ## Agentes soportados
 
